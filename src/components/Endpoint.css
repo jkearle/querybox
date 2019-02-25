@@ -1,0 +1,12 @@
+.Endpoint {
+    padding-right: 7px;
+}
+
+.Endpoint label {
+    display: block;
+}
+
+.Endpoint input[type=text] {
+    width: 100%;
+    font-size: 1.5em;
+}

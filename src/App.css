@@ -1,0 +1,14 @@
+header {
+  background-color: blue;
+  color: #ffffff;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.App {
+  height: 100%;
+}
+
+.App-Body {
+  margin: 10px;
+}

@@ -1,0 +1,8 @@
+.Query {
+    padding-right: 7px;
+}
+
+.Query textarea {
+    width: 100%;
+    height: 200px;
+}

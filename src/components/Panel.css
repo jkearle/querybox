@@ -1,0 +1,15 @@
+.Panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    right: 0;
+    background-color: #333333;
+    color: #ffffff;
+    transition: left;
+    transition-duration: 0.5s
+}
+
+.Panel.visible {
+    left: 0;
+}
