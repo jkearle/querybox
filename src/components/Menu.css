@@ -1,0 +1,15 @@
+.Menu {
+    position: absolute;
+    top: 45px;
+    bottom: 0;
+    left: -300px;
+    background-color: #333333;
+    color: #ffffff;
+    transition: left;
+    transition-duration: 0.5s;
+    width: 300px;
+}
+
+.Menu.visible {
+    left: 0;
+}

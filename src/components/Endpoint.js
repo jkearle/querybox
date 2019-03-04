@@ -5,8 +5,13 @@ class Endpoint extends Component {
     render() {
         return (
             <div className="Endpoint Component">
-                <label for="endpoint">Search Endpoint</label>
-                <input name="endpoint" type="text" placeholder="Example: https://127.0.0.1/_all/_search"/>
+                <label htmlFor="endpoint">Search Endpoint</label>
+                <input
+                    name="endpoint"
+                    type="text"
+                    value={this.props.endpoint}
+                    placeholder="Example: https://127.0.0.1/_all/_search"
+                    onChange={(event) => this.props.save(event.target.value)}/>
             </div>
         );
     }
