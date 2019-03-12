@@ -27,9 +27,18 @@ class Split extends Component {
         if (this.props.results1.data !== undefined &&
             this.props.results1.data.hits !== undefined &&
             this.props.results1.data.hits.hits !== undefined) {
+
+           // var keys = Object.keys(obj);
+           // console.log('obj contains ' + keys.length + ' keys: '+  keys);
+
+            Object.keys(this.props.results1.data.hits.hits[0]._source).forEach(function(keyValue){
+              // console.log("Split " + keyValue);
+                selectIds.push({text: keyValue, value: keyValue});
+            });
+
             for (let i = 0; i < this.props.results1.data.hits.hits.length; i++) {
-                selectIds.push({text: this.props.results1.data.hits.hits[i]._id, value: i});
-                console.log(this.props.results1.data.hits.hits[i]._id);
+                //selectIds.push({text: this.props.results1.data.hits.hits[i]._id, value: i});
+                //console.log(this.props.results1.data.hits.hits[i]._id);
             }
         }
         return (

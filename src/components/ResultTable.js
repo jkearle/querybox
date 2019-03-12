@@ -15,7 +15,7 @@ class ResultTable extends Component {
             this.props.results.hits.hits !== undefined) {
             for (let i = 0; i < this.props.results.hits.hits.length; i++) {
                 results.push(<Result result={this.props.results.hits.hits[i]._id} key={i}/>);
-                console.log(this.props.results.hits.hits[i]._id);
+                //console.log(this.props.results.hits.hits[i]._id);
             }
         }
         return (
