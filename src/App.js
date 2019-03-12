@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import './App.css';
 import Endpoint from './components/Endpoint';
@@ -10,7 +10,6 @@ import Split from "./components/Split";
 import ActionButton from "./components/ActionButton";
 
 class App extends Component {
-
     constructor(props) {
         super(props);
 
@@ -18,11 +17,22 @@ class App extends Component {
             menu: false,
             split: false,
             panel: false,
-            endpoint: "",
-            query1: "",
+            endpoint: `http://10.12.51.25:9200/offers/offer/_search`,
+            query1: "{\n" +
+                "    \"size\": 100,\n" +
+                "    \"query\": {\n" +
+                "        \"filtered\": {\n" +
+                "            \"filter\": {\n" +
+                "                \"missing\": {\n" +
+                "                    \"field\": \"editorial_body\"\n" +
+                "                }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}",
             query2: "",
-            panelquery: "",
-            panelnumber: 0,
+            panelQuery: "",
+            panelNumber: 0,
             results1: {},
             results2: {}
         };
@@ -36,13 +46,15 @@ class App extends Component {
             if (this.state.query1) {
                 try {
                     post = JSON.parse(this.state.query1);
-                } catch(e) {
+                } catch (e) {
+
 
                 }
             }
             axios.post(this.state.endpoint, post)
                 .then(response => {
-                    this.setState({results1: response})
+                    console.log("Axios Response => " + response.toString());
+                    this.setState({results1: response});
                 });
 
             if (this.state.split) {
@@ -54,23 +66,23 @@ class App extends Component {
         }
     }
 
-    handleQuery(querynumber, close = null, state = {}) {
-        let panelquery = "";
-        let panelnumber = 0;
+    handleQuery(queryNumber, close = null, state = {}) {
+        let panelQuery = "";
+        let panelNumber = 0;
         const panel = this.state.panel;
         if (close === null) {
             close = panel;
         }
-        if (close === false && querynumber === 1) {
-            panelquery = this.state.query1;
-            panelnumber = querynumber;
-        } else if (close === false && querynumber === 2) {
-            panelquery = this.state.query2;
-            panelnumber = querynumber;
+        if (close === false && queryNumber === 1) {
+            panelQuery = this.state.query1;
+            panelNumber = queryNumber;
+        } else if (close === false && queryNumber === 2) {
+            panelQuery = this.state.query2;
+            panelNumber = queryNumber;
         }
 
-        state.panelquery = panelquery;
-        state.panelnumber = panelnumber;
+        state.panelquery = panelQuery;
+        state.panelnumber = panelNumber;
         if (close === true) {
             state.panel = false;
         } else {
@@ -81,14 +93,14 @@ class App extends Component {
     }
 
     handleQuerySave() {
-        let query = this.state.panelquery;
+        let panelQuery = this.state.panelQuery;
         let query1 = this.state.query1;
         let query2 = this.state.query2;
-        let querynumber = this.state.panelnumber;
-        if (querynumber === 1) {
-            query1 = query;
-        } else if (querynumber === 2) {
-            query2 = query;
+        let queryNumber = this.state.panelNumber;
+        if (queryNumber === 1) {
+            query1 = panelQuery;
+        } else if (queryNumber === 2) {
+            query2 = panelQuery;
         }
 
         let state = {query1: query1, query2: query2};
@@ -136,7 +148,8 @@ class App extends Component {
                 <div className="App-Body">
                     <div className="Body-Top">
                         <div className="Body-Top-Endpoint">
-                            <Endpoint endpoint={this.state.endpoint} save={(endpoint) => this.setState({endpoint: endpoint})}/>
+                            <Endpoint endpoint={this.state.endpoint}
+                                      save={(endpoint) => this.setState({endpoint: endpoint})}/>
                         </div>
                         <div className="Body-Top-Button">
                             <ActionButton text="Go" onClick={() => this.executeRequests()}/>
@@ -158,8 +171,8 @@ class App extends Component {
                 </div>
                 <Panel
                     open={this.state.panel}
-                    query={this.state.panelquery}
-                    update={(query) => this.setState({panelquery: query})}
+                    query={this.state.panelQuery}
+                    update={(query) => this.setState({panelQuery: query})}
                     save={() => this.handleQuerySave()}/>
                 <Menu open={this.state.menu}/>
             </div>
