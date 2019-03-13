@@ -11,6 +11,19 @@ class Split extends Component {
         //TODO Add something to a "what to compare" list.
     };
 
+    getMultiSelect(selectIds){
+        if(selectIds.length > 0){
+            return <FilteredMultiSelect
+                onChange={this.handleSelectionChange}
+                options={selectIds}
+                textProp="text"
+                valueProp="value"
+                size={6}
+            />;
+        }
+        return <div/>;
+    }
+
     render() {
         let seconditem = "SplitItem";
         if (!this.props.split) {
@@ -28,18 +41,14 @@ class Split extends Component {
             this.props.results1.data.hits !== undefined &&
             this.props.results1.data.hits.hits !== undefined) {
 
-           // var keys = Object.keys(obj);
-           // console.log('obj contains ' + keys.length + ' keys: '+  keys);
-
             Object.keys(this.props.results1.data.hits.hits[0]._source).forEach(function(keyValue){
-              // console.log("Split " + keyValue);
                 selectIds.push({text: keyValue, value: keyValue});
             });
 
-            for (let i = 0; i < this.props.results1.data.hits.hits.length; i++) {
+            //for (let i = 0; i < this.props.results1.data.hits.hits.length; i++) {
                 //selectIds.push({text: this.props.results1.data.hits.hits[i]._id, value: i});
                 //console.log(this.props.results1.data.hits.hits[i]._id);
-            }
+            //}
         }
         return (
             <div className="Split">
@@ -47,12 +56,7 @@ class Split extends Component {
                     <div className="SplitItem">
                         <Query query={this.props.query1} onClick={() => this.props.queryClick(1)}/>
 
-                        <FilteredMultiSelect
-                            onChange={this.handleSelectionChange}
-                            options={selectIds}
-                            textProp="text"
-                            valueProp="value"
-                        />
+                        {this.getMultiSelect(selectIds)}
 
                         <ResultTable results={this.props.results1.data}/>
                     </div>
