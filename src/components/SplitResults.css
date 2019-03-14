@@ -1,0 +1,13 @@
+.SplitGrid {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(30%,1fr));
+}
+
+.SplitItem {
+
+}
+
+.SplitItem.SplitHidden {
+    display: none;
+}
