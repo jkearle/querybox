@@ -1,0 +1,7 @@
+.Stats {
+    background-color: rgba(120,120,120,0.8);
+    border-radius: 5px;
+    padding: 5px;
+    min-width: 100px;
+    font-size: 0.8em;
+}
