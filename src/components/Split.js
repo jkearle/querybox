@@ -1,26 +1,19 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './Split.css';
-import Query from "./Query";
-import ResultTable from "./ResultTable";
+import {SplitQuery, SplitResults} from "../components";
+
 
 class Split extends Component {
     render() {
-        let seconditem = "SplitItem";
-        if (!this.props.split) {
-            seconditem += " SplitHidden";
-        }
         return (
             <div className="Split">
-                <div className="SplitGrid">
-                    <div className="SplitItem">
-                        <Query query={this.props.query1} onClick={() => this.props.queryClick(1)}/>
-                        <ResultTable results={this.props.results1}/>
-                    </div>
-                    <div className={seconditem}>
-                        <Query query={this.props.query2} onClick={() => this.props.queryClick(2)}/>
-                        <ResultTable results={this.props.results2}/>
-                    </div>
-                </div>
+                <SplitQuery split={this.props.split}
+                            query1={this.props.query1}
+                            query2={this.props.query2}
+                            queryClick={this.props.queryClick}/>
+                <SplitResults split={this.props.split}
+                              results1={this.props.results1}
+                              results2={this.props.results2}/>
             </div>
         );
     }

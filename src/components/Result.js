@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 class Result extends Component {
     render() {
         return (
-            <tr></tr>
+            <tr key={this.props.i}>{this.props.result}</tr>
         );
     }
 }
