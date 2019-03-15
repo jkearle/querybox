@@ -45,7 +45,7 @@ class SplitResults extends Component {
 
     getResultsTable(results){
         if(results.data !== undefined && this.state.showCompare){
-            return <ResultTable results={this.props.results1.data}/>
+            return <ResultTable results={results.data}/>
         }
     }
 
