@@ -13,7 +13,7 @@ class Split extends Component {
                             queryClick={this.props.queryClick}/>
                 <SplitResults split={this.props.split}
                               results1={this.props.results1}
-                              results2={this.props.results1}/>
+                              results2={this.props.results2}/>
             </div>
         );
     }

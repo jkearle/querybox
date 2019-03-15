@@ -48,8 +48,6 @@ class App extends Component {
                 try {
                     post = JSON.parse(this.state.query1);
                 } catch (e) {
-
-
                 }
             }
             axios.post(this.state.endpoint, post)

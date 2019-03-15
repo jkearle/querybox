@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './SplitQuery.css';
-import Query from "./Query";
+import {Query, Stats}  from "../components";
 
-class Split extends Component {
+class SplitQuery extends Component {
     render() {
         let seconditem = "SplitItem";
         if (!this.props.split) {
@@ -24,4 +24,4 @@ class Split extends Component {
     }
 }
 
-export default Split;
+export default SplitQuery;

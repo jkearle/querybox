@@ -4,9 +4,10 @@ import ResultTable from "./ResultTable";
 import FilteredMultiSelect from 'react-filtered-multiselect';
 //Found at https://react.rocks/example/react-filtered-multiselect
 import Inspector from 'react-inspector';
+import {Stats} from "./index";
 //Found at https://www.npmjs.com/package/react-inspector
 
-class Split extends Component {
+class SplitResults extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -48,6 +49,12 @@ class Split extends Component {
         }
     }
 
+    getStats(results){
+        if(results.data !== undefined){
+            return <Stats took={results.data.took}/>
+        }
+    }
+
     getMultiSelect(selectIds){
         if(selectIds.length > 0){
             return <FilteredMultiSelect
@@ -86,10 +93,13 @@ class Split extends Component {
                 //console.log(this.props.results1.data.hits.hits[i]._id);
             //}
         }
+
         return (
             <div className="Split">
                 <div className="SplitGrid">
                     <div className="SplitItemResult">
+                        {this.getStats(this.props.results1)}
+
                         {this.getTabButtons()}
 
                         {this.getJsonTree(this.props.results1)}
@@ -101,6 +111,9 @@ class Split extends Component {
                         {this.getMultiSelect(selectIds)}
                     </div>
                     <div className={compareItem}>
+
+                        {this.getStats(this.props.results2)}
+
                         {this.getJsonTree(this.props.results2)}
 
                         {this.getResultsTable(this.props.results2)}
@@ -111,4 +124,4 @@ class Split extends Component {
     }
 }
 
-export default Split;
+export default SplitResults;
