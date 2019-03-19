@@ -11,8 +11,8 @@ class SplitResults extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showCompare1: false,
-            showJson1: true,
+            showCompare: false,
+            showJson: true,
         };
     }
 
@@ -72,12 +72,6 @@ class SplitResults extends Component {
         if (!this.props.split) {
             compareItem += " SplitHidden";
         }
-
-        console.log("Split " + this.props.results1.data);
-      /*  let options = [
-            {value: 1, text: 'Item One'},
-            {value: 2, text: 'Item Two'}
-        ]; */
 
         let selectIds = [];
         if (this.props.results1.data !== undefined &&

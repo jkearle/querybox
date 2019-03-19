@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './SplitQuery.css';
-import {Query, Stats}  from "../components";
+import {Query}  from "../components";
 
 class SplitQuery extends Component {
     render() {
