@@ -80,8 +80,8 @@ class App extends Component {
             panelNumber = queryNumber;
         }
 
-        state.panelquery = panelQuery;
-        state.panelnumber = panelNumber;
+        state.panelQuery = panelQuery;
+        state.panelNumber = panelNumber;
         if (close === true) {
             state.panel = false;
         } else {
