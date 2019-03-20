@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import './SplitResults.css';
 import ResultTable from "./ResultTable";
-import FilteredMultiSelect from 'react-filtered-multiselect';
-//Found at https://react.rocks/example/react-filtered-multiselect
-import Inspector from 'react-inspector';
+import FilteredMultiSelect from 'react-filtered-multiselect';//Found at https://react.rocks/example/react-filtered-multiselect
+import Inspector from 'react-inspector';//Found at https://www.npmjs.com/package/react-inspector
 import {Stats} from "./index";
-//Found at https://www.npmjs.com/package/react-inspector
+
 
 class SplitResults extends Component {
     constructor(props) {
@@ -55,7 +54,11 @@ class SplitResults extends Component {
         }
     }
 
-    getMultiSelect(selectIds){
+    getMultiSelect(){
+        let selectIds = [];
+        if (this.props.results1.data !== undefined) {
+            this.findAllKeys('', selectIds, this.props.results1.data);
+        }
         if(selectIds.length > 0){
             return <FilteredMultiSelect
                 onChange={this.handleSelectionChange}
@@ -67,49 +70,53 @@ class SplitResults extends Component {
         }
     }
 
+    findAllKeys(base, keyArray, jsonObject){
+        Object.keys(jsonObject).forEach((keyValue) => {
+            if(typeof jsonObject[keyValue] == 'object' && jsonObject[keyValue] !== null) {//If it's an object we need to call this function on the object to get the child keys
+                //get the children
+                if(jsonObject[keyValue] !== null ){ //TODO simplify this conditional
+                    if(jsonObject instanceof Array) {
+                        if (keyValue !== '0') {
+                            return;
+                        }
+                    }
+                    if(base === ''){
+                        this.findAllKeys(keyValue , keyArray, jsonObject[keyValue]);
+                    } else {
+                        this.findAllKeys(base + '.' + keyValue , keyArray, jsonObject[keyValue]);
+                    }
+                }
+            } else {
+                if(base === ''){//TODO would love some guidelines or thoughts on using the comparison operators - without strongly typed variables, which do you choose? New concept for me.
+                    keyArray.push({text: keyValue, value: keyValue});
+                } else {
+                    keyArray.push({text: base + '.' + keyValue, value: base + '.' + keyValue});
+                }
+
+            }
+        });
+    };
+
     render() {
         let compareItem = "SplitItem";
         if (!this.props.split) {
             compareItem += " SplitHidden";
         }
-
-        let selectIds = [];
-        if (this.props.results1.data !== undefined &&
-            this.props.results1.data.hits !== undefined &&
-            this.props.results1.data.hits.hits !== undefined) {
-
-            Object.keys(this.props.results1.data.hits.hits[0]._source).forEach(function(keyValue){
-                selectIds.push({text: keyValue, value: keyValue});
-            });
-
-            //for (let i = 0; i < this.props.results1.data.hits.hits.length; i++) {
-                //selectIds.push({text: this.props.results1.data.hits.hits[i]._id, value: i});
-                //console.log(this.props.results1.data.hits.hits[i]._id);
-            //}
-        }
-
         return (
             <div className="Split">
                 <div className="SplitGrid">
                     <div className="SplitItemResult">
                         {this.getStats(this.props.results1)}
-
                         {this.getTabButtons()}
-
                         {this.getJsonTree(this.props.results1)}
-
                         {this.getResultsTable(this.props.results1)}
-
                     </div>
                     <div className={compareItem}>
-                        {this.getMultiSelect(selectIds)}
+                        {this.getMultiSelect()}
                     </div>
                     <div className={compareItem}>
-
                         {this.getStats(this.props.results2)}
-
                         {this.getJsonTree(this.props.results2)}
-
                         {this.getResultsTable(this.props.results2)}
                     </div>
                 </div>
