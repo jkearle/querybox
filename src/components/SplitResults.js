@@ -12,11 +12,13 @@ class SplitResults extends Component {
         this.state = {
             showCompare: false,
             showJson: true,
+            compareKeyChain: ''
         };
     }
-
-    handleSelectionChange = () => {
-        //TODO Add something to a "what to compare" list.
+ 
+    handleSelectionChange = (selection) => {
+        console.log(selection);
+        this.setState({compareKeyChain: selection[0].value});
     };
 
     showReturnInJson = () => {
@@ -44,7 +46,10 @@ class SplitResults extends Component {
 
     getResultsTable(results) {
         if (results.data !== undefined && this.state.showCompare) {
-            return <ResultTable results={results.data}/>
+            return <ResultTable
+                results={results.data}
+                compareKeyChain={this.state.compareKeyChain}
+                />
         }
     }
 
@@ -66,6 +71,7 @@ class SplitResults extends Component {
                 textProp="text"
                 valueProp="value"
                 size={6}
+
             />;
         }
     }
