@@ -15,7 +15,7 @@ class SplitResults extends Component {
             compareKeyChain: ''
         };
     }
- 
+
     handleSelectionChange = (selection) => {
         console.log(selection);
         this.setState({compareKeyChain: selection[0].value});
@@ -44,12 +44,13 @@ class SplitResults extends Component {
         }
     }
 
-    getResultsTable(results) {
+    getResultsTable(results, compareResults) {
         if (results.data !== undefined && this.state.showCompare) {
             return <ResultTable
                 results={results.data}
+                compareResults={compareResults.data}
                 compareKeyChain={this.state.compareKeyChain}
-                />
+            />
         }
     }
 
@@ -111,7 +112,7 @@ class SplitResults extends Component {
                         {this.getStats(this.props.results1)}
                         {this.getTabButtons()}
                         {this.getJsonTree(this.props.results1)}
-                        {this.getResultsTable(this.props.results1)}
+                        {this.getResultsTable(this.props.results1, this.props.results2)}
                     </div>
                     <div className={compareItem}>
                         {this.getMultiSelect()}
@@ -119,7 +120,7 @@ class SplitResults extends Component {
                     <div className={compareItem}>
                         {this.getStats(this.props.results2)}
                         {this.getJsonTree(this.props.results2)}
-                        {this.getResultsTable(this.props.results2)}
+                        {this.getResultsTable(this.props.results2, this.props.results1)}
                     </div>
                 </div>
             </div>
