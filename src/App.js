@@ -173,7 +173,7 @@ class App extends Component {
                     query={this.state.panelQuery}
                     update={(query) => this.setState({panelQuery: query})}
                     save={() => this.handleQuerySave()}/>
-                <Menu open={this.state.menu}/>
+                {/*<Menu open={this.state.menu}/>--> */}
             </div>
         );
     }
