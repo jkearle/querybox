@@ -1,34 +1,74 @@
 import React, {Component} from 'react';
 import './ResultTable.css'
-import Result from './Result'
+import {ResultRow} from './index'
+import NO_DIFF from './ResultRow'
+import SAME from './ResultRow'
+import DIFFERENT from './ResultRow'
 
 class ResultTable extends Component {
 
-    //TODO the keychain value is lost when going back and forth between JSON and the Compare tab - look to save with redux update
     getCompareTable() {
-        if (this.props.compareKeyChain !== undefined &&
-            this.props.compareKeyChain !== '') {
-            let results = [];
+        if (this.areAllNeededPropsValid()) {
+            let resultTableRowElements = [];//this should contain the final array of ResultsRow elements
+            let colHeadersRowElement = [];
+            let arrayOfSingleColumnAllRowsTextArrays = [];
+            let arrayOfSingleColumnAllRowsComparisonsArrays = [];
+            let numberOfRows = 0;
+            this.props.compareKeyChain.forEach((singleCompareKeyChain) => {
+                let keys = singleCompareKeyChain.split('.');
+                let headerText = keys[keys.length - 1];
+                colHeadersRowElement.push(<th> {headerText} </th>);
+                let textArray = [];
+                let compareArray = [];
+                if (singleCompareKeyChain.includes('0')) {
+                    this.getResultsArray(singleCompareKeyChain, textArray, compareArray);
+                } else {
+                    this.getResultsSingle(singleCompareKeyChain, textArray, compareArray);
+                }
 
-            if (this.props.compareKeyChain.includes('0')) {
-                this.getResultsArray(results);
-            } else {
-                this.getResultsSingle(results);
+                arrayOfSingleColumnAllRowsTextArrays.push(textArray);
+                arrayOfSingleColumnAllRowsComparisonsArrays.push(compareArray);
+
+                if (textArray.length > numberOfRows) {
+                    numberOfRows = textArray.length;
+                }
+            });
+
+            resultTableRowElements.push(<tr> {colHeadersRowElement} </tr>);
+
+            for (let i = 0; i < numberOfRows; i++) {
+                let singleRowTextValue = [];
+                let singleRowCompareValue = [];
+                for (let j = 0; j < arrayOfSingleColumnAllRowsTextArrays.length; j++) {
+                    singleRowTextValue.push(arrayOfSingleColumnAllRowsTextArrays[j][i]);
+                    singleRowCompareValue.push(arrayOfSingleColumnAllRowsComparisonsArrays[j][i]);
+                }
+                resultTableRowElements.push(<ResultRow
+                    cellsText={singleRowTextValue}
+                    cellsDiffState={singleRowCompareValue}/>);
             }
+
             return <table className="compareTable">
-                {results}
+                {resultTableRowElements}
             </table>
         }
     }
 
-    getResultsArray(resultsArray) {
-        let keys = this.props.compareKeyChain.split('.');
+    areAllNeededPropsValid() {
+        return this.props.compareKeyChain !== undefined &&
+            this.props.compareKeyChain.length > 0 &&
+            this.props.returnData !== undefined;
+    }
+
+    getResultsArray(singleCompareKeyChain, textValueArray, diffStateArray) {
+        const {returnData, compareReturnData} = this.props;
+
+        let keys = singleCompareKeyChain.split('.');
         let arrayObject = undefined;
         let compareArrayObject = undefined;
         let arrayIndex = 0;
-        let diff = false;
         let checkDiff = true;
-        let same = false;
+
 
         for (let i = 0; i < keys.length; i++) {
             let s = keys[i];
@@ -37,7 +77,7 @@ class ResultTable extends Component {
                 i = keys.length;
             } else {
                 if (arrayObject === undefined) {
-                    arrayObject = this.props.results[s];
+                    arrayObject = returnData[s];
                 } else {
                     arrayObject = arrayObject[s];
                 }
@@ -45,14 +85,14 @@ class ResultTable extends Component {
         }
 
         //If we have a compare object then let's compare
-        if (this.props.compareResults !== undefined && this.props.compareResults !== null) {
+        if (compareReturnData !== undefined && compareReturnData !== null) {
             for (let i = 0; i < keys.length; i++) {
                 let s = keys[i];
                 if (s === '0') {
                     i = keys.length;
                 } else {
                     if (compareArrayObject === undefined) {
-                        compareArrayObject = this.props.compareResults[s];
+                        compareArrayObject = compareReturnData[s];
                     } else {
                         compareArrayObject = compareArrayObject[s];
                     }
@@ -64,9 +104,7 @@ class ResultTable extends Component {
         for (let i = 0; i < arrayObject.length; i++) {
             let finalObject = arrayObject[i];
             let compareFinalObject = undefined;
-            diff = false;
             checkDiff = true;
-            same = false;
             if (compareArrayObject !== undefined) {
                 compareFinalObject = compareArrayObject[i];//add key check here
             }
@@ -76,41 +114,39 @@ class ResultTable extends Component {
             }
 
             if (finalObject === compareFinalObject) {
-                same = true;
+                diffStateArray.push(SAME);
             } else if (checkDiff) {
-                diff = true;
+                diffStateArray.push(DIFFERENT);
+            } else {
+                diffStateArray.push(NO_DIFF);
             }
 
-            resultsArray.push(<Result
-                result={finalObject}
-                diff={diff}
-                same={same}
-            />);
+            textValueArray.push(finalObject);
         }
     }
 
-    getResultsSingle(resultsArray) {
-        let keys = this.props.compareKeyChain.split('.');
+    getResultsSingle(singleCompareKeyChain, textValueArray, diffStateArray) {
+        const {returnData, compareReturnData} = this.props;
+
+        let keys = singleCompareKeyChain.split('.');
         let currentObject = undefined;
         let compareObject = undefined;
-        let diff = false;
         let checkDiff = true;
-        let same = false;
 
         keys.forEach((s) => {//TODO should there be try catches or check that key is valid
             if (currentObject === undefined) {
-                currentObject = this.props.results[s];
+                currentObject = returnData[s];
             } else {
                 currentObject = currentObject[s];
             }
         });
 
         //If we have a compare object then let's compare
-        if (this.props.compareResults !== undefined && this.props.compareResults !== null) {
+        if (compareReturnData !== undefined && compareReturnData !== null) {
             keys.forEach((s) => {
                 if (compareObject === undefined) {
-                    if (s in this.props.compareResults) {
-                        compareObject = this.props.compareResults[s];
+                    if (s in compareReturnData) {
+                        compareObject = compareReturnData[s];
                     } else {
                         checkDiff = true;
                     }
@@ -125,16 +161,14 @@ class ResultTable extends Component {
         }
 
         if (currentObject === compareObject) {
-            same = true;
+            diffStateArray.push(SAME);
         } else if (checkDiff) {
-            diff = true;
+            diffStateArray.push(DIFFERENT);
+        } else {
+            diffStateArray.push(NO_DIFF);
         }
 
-        resultsArray.push(<Result
-            result={currentObject}
-            diff={diff}
-            same={same}
-        />);
+        textValueArray.push(currentObject);
     }
 
     render() {

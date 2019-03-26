@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import './SplitResults.css';
-import ResultTable from "./ResultTable";
-import FilteredMultiSelect from 'react-filtered-multiselect';//Found at https://react.rocks/example/react-filtered-multiselect
-import Inspector from 'react-inspector';//Found at https://www.npmjs.com/package/react-inspector
-import {Stats} from "./index";
+import FilteredMultiSelect from 'react-filtered-multiselect'; //Found at https://react.rocks/example/react-filtered-multiselect
+import Inspector from 'react-inspector'; //Found at https://www.npmjs.com/package/react-inspector
+import {Stats, ResultTable} from "./index";
 
 
 class SplitResults extends Component {
@@ -12,13 +11,17 @@ class SplitResults extends Component {
         this.state = {
             showCompare: false,
             showJson: true,
-            compareKeyChain: ''
+            compareKeyChain: []
         };
     }
 
     handleSelectionChange = (selection) => {
         console.log(selection);
-        this.setState({compareKeyChain: selection[0].value});
+        let keyValues = [];
+        selection.forEach((s) => {
+            keyValues.push(s.value)
+        });
+        this.setState({compareKeyChain: keyValues});
     };
 
     showReturnInJson = () => {
@@ -30,7 +33,9 @@ class SplitResults extends Component {
     };
 
     getTabButtons() {
-        if (this.props.results1.data !== undefined) {
+        const {returnData1} = this.props;
+
+        if (returnData1.data !== undefined) {
             return <div className="Split Display Return Select">
                 <button className={'compare'} onClick={this.showReturnInCompare}>Compare</button>
                 <button className={'json'} onClick={this.showReturnInJson}>JSON</button>
@@ -44,26 +49,29 @@ class SplitResults extends Component {
         }
     }
 
-    getResultsTable(results, compareResults) {
-        if (results.data !== undefined && this.state.showCompare) {
+    getResultsTable(returnData, compareReturnData) {
+        if (returnData.data !== undefined && this.state.showCompare) {
             return <ResultTable
-                results={results.data}
-                compareResults={compareResults.data}
+                returnData={returnData.data}
+                compareReturnData={compareReturnData.data}
                 compareKeyChain={this.state.compareKeyChain}
             />
         }
     }
 
     getStats(results) {
-        if (results.data !== undefined) {
+        if (results.data !== undefined &&
+            results.data.took !== undefined ) {
             return <Stats took={results.data.took}/>
         }
     }
 
     getMultiSelect() {
+        const {returnData1} = this.props;
+
         let selectIds = [];
-        if (this.props.results1.data !== undefined) {
-            this.findAllKeys('', selectIds, this.props.results1.data);
+        if (returnData1.data !== undefined) {
+            this.findAllKeys('', selectIds, returnData1.data);
         }
         if (selectIds.length > 0) {
             return <FilteredMultiSelect
@@ -72,7 +80,6 @@ class SplitResults extends Component {
                 textProp="text"
                 valueProp="value"
                 size={6}
-
             />;
         }
     }
@@ -90,7 +97,7 @@ class SplitResults extends Component {
                     this.findAllKeys(base + '.' + keyValue, keyArray, jsonObject[keyValue]);
                 }
             } else {
-                if (base === '') {//TODO would love some guidelines or thoughts on using the comparison operators - without strongly typed variables, which do you choose? New concept for me.
+                if (base === '') {
                     keyArray.push({text: keyValue, value: keyValue});
                 } else {
                     keyArray.push({text: base + '.' + keyValue, value: base + '.' + keyValue});
@@ -101,26 +108,29 @@ class SplitResults extends Component {
     };
 
     render() {
+        const {returnData1, returnData2, split} = this.props;
+
         let compareItem = "SplitItem";
-        if (!this.props.split) {
+
+        if (!split) {
             compareItem += " SplitHidden";
         }
         return (
             <div className="Split">
                 <div className="SplitGrid">
                     <div className="SplitItemResult">
-                        {this.getStats(this.props.results1)}
+                        {this.getStats(returnData1)}
                         {this.getTabButtons()}
-                        {this.getJsonTree(this.props.results1)}
-                        {this.getResultsTable(this.props.results1, this.props.results2)}
+                        {this.getJsonTree(returnData1)}
+                        {this.getResultsTable(returnData1, returnData2)}
                     </div>
                     <div className={compareItem}>
                         {this.getMultiSelect()}
                     </div>
                     <div className={compareItem}>
-                        {this.getStats(this.props.results2)}
-                        {this.getJsonTree(this.props.results2)}
-                        {this.getResultsTable(this.props.results2, this.props.results1)}
+                        {this.getStats(returnData2)}
+                        {this.getJsonTree(returnData2)}
+                        {this.getResultsTable(returnData2, returnData1)}
                     </div>
                 </div>
             </div>
