@@ -61,7 +61,7 @@ class SplitResults extends Component {
 
     getStats(results) {
         if (results.data !== undefined &&
-            results.data.took !== undefined ) {
+            results.data.took !== undefined) {
             return <Stats took={results.data.took}/>
         }
     }

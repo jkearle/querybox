@@ -24,12 +24,12 @@ class ResultRow extends Component {
                 } else if (cellDiffState === SAME) {
                     color = SAME_COLOR;
                 }
-                resultsCells.push(<td bgcolor={color}>{cellsText[i]}</td>)
+                resultsCells.push(<td bgcolor={color} key={'Result Row Cell' + this.props.index + ',' + i}>{cellsText[i]}</td>)
             }
         }
 
         return (
-            <tr> {resultsCells}</tr>
+            <tr key={'Result Row ' + this.props.index} >{resultsCells}</tr>
         );
     }
 }

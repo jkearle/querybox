@@ -17,7 +17,7 @@ class ResultTable extends Component {
             this.props.compareKeyChain.forEach((singleCompareKeyChain) => {
                 let keys = singleCompareKeyChain.split('.');
                 let headerText = keys[keys.length - 1];
-                colHeadersRowElement.push(<th> {headerText} </th>);
+                colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
                 let textArray = [];
                 let compareArray = [];
                 if (singleCompareKeyChain.includes('0')) {
@@ -34,7 +34,7 @@ class ResultTable extends Component {
                 }
             });
 
-            resultTableRowElements.push(<tr> {colHeadersRowElement} </tr>);
+            resultTableRowElements.push(<tr key={'header row'}>{colHeadersRowElement}</tr>);
 
             for (let i = 0; i < numberOfRows; i++) {
                 let singleRowTextValue = [];
@@ -44,12 +44,15 @@ class ResultTable extends Component {
                     singleRowCompareValue.push(arrayOfSingleColumnAllRowsComparisonsArrays[j][i]);
                 }
                 resultTableRowElements.push(<ResultRow
+                    key={'Result Table Row ' + i}
                     cellsText={singleRowTextValue}
                     cellsDiffState={singleRowCompareValue}/>);
             }
 
             return <table className="compareTable">
+                <tbody>
                 {resultTableRowElements}
+                </tbody>
             </table>
         }
     }
