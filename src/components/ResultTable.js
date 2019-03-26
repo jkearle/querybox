@@ -55,11 +55,24 @@ class ResultTable extends Component {
     }
 
     areAllNeededPropsValid() {
+        const {returnData} = this.props;
         return this.props.compareKeyChain !== undefined &&
             this.props.compareKeyChain.length > 0 &&
-            this.props.returnData !== undefined;
+            returnData !== undefined;
     }
 
+    /**
+     * Retrieves the text for the given key path, places the text into textValueArray. If the
+     * compareReturn Data is valid, then it will check if the key path is valid, then compare that
+     * value to the previous text found. The state of the comparison (either Different, same, or nothing
+     * when the key path is not valid in the compare data) is placed into the diffStateArray.
+     * This method is used if the key path contains an arrays along the path.
+     * @param singleCompareKeyChain - Period separated key values for the JSON object.
+     * @param textValueArray - This method will push the text values found at the end of the key path,
+     * for all each of the array paths.
+     * @param diffStateArray - This method will push the compare value found at the end of the key path
+     * for all each of the array paths.
+     */
     getResultsArray(singleCompareKeyChain, textValueArray, diffStateArray) {
         const {returnData, compareReturnData} = this.props;
 
@@ -68,7 +81,6 @@ class ResultTable extends Component {
         let compareArrayObject = undefined;
         let arrayIndex = 0;
         let checkDiff = true;
-
 
         for (let i = 0; i < keys.length; i++) {
             let s = keys[i];
@@ -125,6 +137,16 @@ class ResultTable extends Component {
         }
     }
 
+    /**
+     * Retrieves the text for the given key path, places the text into textValueArray. If the
+     * compareReturn Data is valid, then it will check if the key path is valid, then compare that
+     * value to the previous text found. The state of the comparison (either Different, same, or nothing
+     * when the key path is not valid in the compare data) is placed into the diffStateArray.
+     * This method is used if the key path does not have any arrays along the path.
+     * @param singleCompareKeyChain - Period separated key values for the JSON object.
+     * @param textValueArray - This method will push the text value found at the end of the key path
+     * @param diffStateArray - This method will push the compare value found at the end of the key path
+     */
     getResultsSingle(singleCompareKeyChain, textValueArray, diffStateArray) {
         const {returnData, compareReturnData} = this.props;
 
