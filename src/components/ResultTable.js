@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
-import NO_DIFF from './ResultRow'
-import SAME from './ResultRow'
-import DIFFERENT from './ResultRow'
+import {NO_DIFF, SAME, DIFFERENT}  from './ResultRow'
+
 
 class ResultTable extends Component {
 
