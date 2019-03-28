@@ -197,7 +197,7 @@ class ResultTable extends Component {
 
     render() {
         return (
-            <div className="ResultTable Component">
+            <div className="result.table">
                 {this.getCompareTable()}
             </div>
         );

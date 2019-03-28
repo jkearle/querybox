@@ -1,4 +1,4 @@
-table{
+table.result.table {
     border: 1px solid black;
     border-collapse: collapse;
     text-align: left;
@@ -7,17 +7,16 @@ table{
     padding-left: 5px;
 }
 
-th {
+table.result.table th {
     background-color: #2c65af;
     color: white;
     border: 1px solid black;
     border-collapse: collapse;
     text-align: center;
     padding: 15px;
-
 }
 
-td {
+table.result.table td {
     border: 1px solid black;
     border-collapse: collapse;
     text-align: left;
