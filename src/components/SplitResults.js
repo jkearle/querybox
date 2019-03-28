@@ -9,8 +9,8 @@ class SplitResults extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showCompare: false,
-            showJson: true,
+            showCompare: true,
+            showJson: false,
             compareKeyChain: []
         };
     }
