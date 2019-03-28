@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import './SplitResults.css';
-import FilteredMultiSelect from 'react-filtered-multiselect'; //Found at https://react.rocks/example/react-filtered-multiselect
 import Inspector from 'react-inspector'; //Found at https://www.npmjs.com/package/react-inspector
-import {Stats, ResultTable} from "./index";
+import {Stats, ResultTable, KeySelect} from "./index";
 
 
 class SplitResults extends Component {
@@ -11,18 +10,14 @@ class SplitResults extends Component {
         this.state = {
             showCompare: true,
             showJson: false,
-            compareKeyChain: []
+            compareKeyChains: []
         };
     }
 
-    handleSelectionChange = (selection) => {
-        console.log(selection);
-        let keyValues = [];
-        selection.forEach((s) => {
-            keyValues.push(s.value)
-        });
-        this.setState({compareKeyChain: keyValues});
+    handleSelectionChange = (selectedKeys) => {
+        this.setState({compareKeyChains: selectedKeys});
     };
+
 
     showReturnInJson = () => {
         this.setState({showCompare: false, showJson: true});
@@ -54,7 +49,7 @@ class SplitResults extends Component {
             return <ResultTable
                 returnData={returnData.data}
                 compareReturnData={compareReturnData.data}
-                compareKeyChain={this.state.compareKeyChain}
+                compareKeyChains={this.state.compareKeyChains}
             />
         }
     }
@@ -66,46 +61,6 @@ class SplitResults extends Component {
         }
     }
 
-    getMultiSelect() {
-        const {returnData1} = this.props;
-
-        let selectIds = [];
-        if (returnData1.data !== undefined) {
-            this.findAllKeys('', selectIds, returnData1.data);
-        }
-        if (selectIds.length > 0) {
-            return <FilteredMultiSelect
-                onChange={this.handleSelectionChange}
-                options={selectIds}
-                textProp="text"
-                valueProp="value"
-                size={6}
-            />;
-        }
-    }
-
-    findAllKeys(base, keyArray, jsonObject) {
-        Object.keys(jsonObject).forEach((keyValue) => {
-            if (typeof jsonObject[keyValue] == 'object' && jsonObject[keyValue] !== null) {//If it's an object we need to call this function on the object to get the child keys
-                //get the children
-                if (jsonObject instanceof Array && keyValue !== '0') {//If it's an array, just iterate over the first one and return on the rest
-                    return;
-                }
-                if (base === '') {
-                    this.findAllKeys(keyValue, keyArray, jsonObject[keyValue]);
-                } else {
-                    this.findAllKeys(base + '.' + keyValue, keyArray, jsonObject[keyValue]);
-                }
-            } else {
-                if (base === '') {
-                    keyArray.push({text: keyValue, value: keyValue});
-                } else {
-                    keyArray.push({text: base + '.' + keyValue, value: base + '.' + keyValue});
-                }
-
-            }
-        });
-    };
 
     render() {
         const {returnData1, returnData2, split} = this.props;
@@ -115,6 +70,9 @@ class SplitResults extends Component {
         if (!split) {
             compareItem += " SplitHidden";
         }
+
+        console.log('Split Results' + this.state.compareKeyChains.length)
+
         return (
             <div className="Split">
                 <div className="SplitGrid">
@@ -125,7 +83,11 @@ class SplitResults extends Component {
                         {this.getResultsTable(returnData1, returnData2)}
                     </div>
                     <div className={compareItem}>
-                        {this.getMultiSelect()}
+                        <KeySelect
+                            returnData = {returnData1}
+                            compareKeyChains = {this.state.compareKeyChains}
+                            selectedKeysUpdated={(selectedKeys) => this.handleSelectionChange(selectedKeys)}
+                        />
                     </div>
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
