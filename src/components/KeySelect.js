@@ -32,7 +32,6 @@ class KeySelect extends Component {
     }
 
     getSelectedKeys() {
-        console.log('getSelectedKeys' + this.props.compareKeyChains.length)
         if (this.props.compareKeyChains.length > 0) {
             let selectedRows = [];
 

@@ -71,8 +71,6 @@ class SplitResults extends Component {
             compareItem += " SplitHidden";
         }
 
-        console.log('Split Results' + this.state.compareKeyChains.length)
-
         return (
             <div className="Split">
                 <div className="SplitGrid">

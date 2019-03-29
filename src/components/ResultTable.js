@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
-import {NO_DIFF, SAME, DIFFERENT}  from './ResultRow'
+import {NO_DIFF, SAME, DIFFERENT} from './ResultRow'
 
 
 class ResultTable extends Component {
@@ -114,17 +114,21 @@ class ResultTable extends Component {
             }
         }
         /////////////////////////////////////////////
-
         for (let i = 0; i < arrayObject.length; i++) {
             let finalObject = arrayObject[i];
+
             let compareFinalObject = undefined;
             checkDiff = true;
             if (compareArrayObject !== undefined) {
-                compareFinalObject = compareArrayObject[i];//add key check here
+                compareFinalObject = compareArrayObject[i];
             }
             for (let i = arrayIndex + 1; i < keys.length; i++) {
-                finalObject = finalObject[keys[i]];
-                compareFinalObject = compareFinalObject[keys[i]];//FIXME apparently, sometimes this returns an undefined.
+                if (finalObject !== undefined) {
+                    finalObject = finalObject[keys[i]];
+                }
+                if (compareFinalObject !== undefined) {
+                    compareFinalObject = compareFinalObject[keys[i]];
+                }
             }
 
             if (finalObject === compareFinalObject) {
