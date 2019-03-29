@@ -54,6 +54,17 @@ class SplitResults extends Component {
         }
     }
 
+    getKeySelect() {
+        const {returnData1} = this.props;
+        if (returnData1.data !== undefined) {
+          return  <KeySelect
+                returnData = {returnData1}
+                compareKeyChains = {this.state.compareKeyChains}
+                selectedKeysUpdated={(selectedKeys) => this.handleSelectionChange(selectedKeys)}
+            />
+        }
+    }
+
     getStats(results) {
         if (results.data !== undefined &&
             results.data.took !== undefined) {
@@ -81,11 +92,7 @@ class SplitResults extends Component {
                         {this.getResultsTable(returnData1, returnData2)}
                     </div>
                     <div className={compareItem}>
-                        <KeySelect
-                            returnData = {returnData1}
-                            compareKeyChains = {this.state.compareKeyChains}
-                            selectedKeysUpdated={(selectedKeys) => this.handleSelectionChange(selectedKeys)}
-                        />
+                        {this.getKeySelect()}
                     </div>
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
