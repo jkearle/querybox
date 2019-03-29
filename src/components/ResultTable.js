@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
-import {NO_DIFF, SAME, DIFFERENT}  from './ResultRow'
+import {NO_DIFF, SAME, DIFFERENT} from './ResultRow'
 
 
 class ResultTable extends Component {
@@ -13,7 +13,7 @@ class ResultTable extends Component {
             let arrayOfSingleColumnAllRowsTextArrays = [];
             let arrayOfSingleColumnAllRowsComparisonsArrays = [];
             let numberOfRows = 0;
-            this.props.compareKeyChain.forEach((singleCompareKeyChain) => {
+            this.props.compareKeyChains.forEach((singleCompareKeyChain) => {
                 let keys = singleCompareKeyChain.split('.');
                 let headerText = keys[keys.length - 1];
                 colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
@@ -48,7 +48,7 @@ class ResultTable extends Component {
                     cellsDiffState={singleRowCompareValue}/>);
             }
 
-            return <table className="compareTable">
+            return <table className="results">
                 <tbody>
                 {resultTableRowElements}
                 </tbody>
@@ -58,8 +58,8 @@ class ResultTable extends Component {
 
     areAllNeededPropsValid() {
         const {returnData} = this.props;
-        return this.props.compareKeyChain !== undefined &&
-            this.props.compareKeyChain.length > 0 &&
+        return this.props.compareKeyChains !== undefined &&
+            this.props.compareKeyChains.length > 0 &&
             returnData !== undefined;
     }
 
@@ -114,17 +114,21 @@ class ResultTable extends Component {
             }
         }
         /////////////////////////////////////////////
-
         for (let i = 0; i < arrayObject.length; i++) {
             let finalObject = arrayObject[i];
+
             let compareFinalObject = undefined;
             checkDiff = true;
             if (compareArrayObject !== undefined) {
-                compareFinalObject = compareArrayObject[i];//add key check here
+                compareFinalObject = compareArrayObject[i];
             }
             for (let i = arrayIndex + 1; i < keys.length; i++) {
-                finalObject = finalObject[keys[i]];
-                compareFinalObject = compareFinalObject[keys[i]];
+                if (finalObject !== undefined) {
+                    finalObject = finalObject[keys[i]];
+                }
+                if (compareFinalObject !== undefined) {
+                    compareFinalObject = compareFinalObject[keys[i]];
+                }
             }
 
             if (finalObject === compareFinalObject) {
