@@ -40,14 +40,16 @@ class Panel extends Component {
                 <div className="panel_content">
                     <p className="error">{this.state.message}</p>
                     <button onClick={this.props.save}>Save</button>
-                    <Editor
-                        placeholder="Enter your JSON query…"
-                        value={this.props.query}
-                        highlight={code => highlight(code, languages.json)}
-                        padding={10}
-                        onValueChange={code => this.props.update(this.format(code))}
-                        className="container_editor"
-                    />
+                    <div className={'panel_editor'}>
+                        <Editor
+                            placeholder="Enter your JSON query…"
+                            value={this.props.query}
+                            highlight={code => highlight(code, languages.json)}
+                            padding={10}
+                            onValueChange={code => this.props.update(this.format(code))}
+                            className="container_editor"
+                        />
+                    </div>
                 </div>
             </div>
         );
