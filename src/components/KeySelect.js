@@ -76,7 +76,7 @@ class KeySelect extends Component {
         });
     };
 
-    clearSelected = () => {//TODO - mention this in Fireside and ask opinion. Putting the phat arrow function on the declaration.
+    clearSelected = () => {
         this.props.selectedKeysUpdated([]);//TODO should we be checking that this prop is not undefined?
     }
 

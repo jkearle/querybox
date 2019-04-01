@@ -1,7 +1,7 @@
 .SplitGrid {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
 }
 
 .SplitItem {
@@ -12,6 +12,30 @@
     display: none;
 }
 
+.split_display_return_select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.split_display_return_select button {
+    font-size: 1.2em;
+    background-color: #cccccc;
+    border-color: #000000;
+    width: 100px;
+}
+
+.split_display_return_select button.selected {
+    box-shadow: inset 1px 5px 5px #777777;
+    background-color: #aaaaaa;
+}
+
 .FilteredMultiSelect__select {
     display: block;
 }
+
+.Stats {
+    margin-bottom: 10px;
+}
+

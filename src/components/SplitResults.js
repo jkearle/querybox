@@ -30,10 +30,18 @@ class SplitResults extends Component {
     getTabButtons() {
         const {returnData1} = this.props;
 
+        let jsonButtonName = '';
+        let compareButtonName = '';
+        if(this.state.showCompare){
+            compareButtonName = 'selected';
+        } else {
+            jsonButtonName = 'selected';
+        }
+
         if (returnData1.data !== undefined) {
-            return <div className="Split Display Return Select">
-                <button className={'compare'} onClick={this.showReturnInCompare}>Compare</button>
-                <button className={'json'} onClick={this.showReturnInJson}>JSON</button>
+            return <div className="split_display_return_select">
+                <button className={compareButtonName} onClick={this.showReturnInCompare}>Compare</button>
+                <button className={jsonButtonName} onClick={this.showReturnInJson}>JSON</button>
             </div>
         }
     }
@@ -67,8 +75,8 @@ class SplitResults extends Component {
 
     getStats(results) {
         if (results.data !== undefined &&
-            results.data.took !== undefined) {
-            return <Stats took={results.data.took}/>
+            results.data['took'] !== undefined) {
+            return <Stats took={results.data['took']}/>
         }
     }
 
@@ -87,11 +95,11 @@ class SplitResults extends Component {
                 <div className="SplitGrid">
                     <div className="SplitItemResult">
                         {this.getStats(returnData1)}
-                        {this.getTabButtons()}
                         {this.getJsonTree(returnData1)}
                         {this.getResultsTable(returnData1, returnData2)}
                     </div>
                     <div className={compareItem}>
+                        {this.getTabButtons()}
                         {this.getKeySelect()}
                     </div>
                     <div className={compareItem}>
