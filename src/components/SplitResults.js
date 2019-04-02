@@ -92,7 +92,7 @@ class SplitResults extends Component {
 
         return (
             <div className="Split">
-                <div className="SplitGrid">
+                <div className="SplitGridResults">
                     <div className="SplitItemResult">
                         {this.getStats(returnData1)}
                         {this.getJsonTree(returnData1)}
