@@ -32,7 +32,7 @@ class SplitResults extends Component {
 
         let jsonButtonName = '';
         let compareButtonName = '';
-        if(this.state.showCompare){
+        if (this.state.showCompare) {
             compareButtonName = 'selected';
         } else {
             jsonButtonName = 'selected';
@@ -63,11 +63,12 @@ class SplitResults extends Component {
     }
 
     getKeySelect() {
-        const {returnData1} = this.props;
+        const {returnData1, keys} = this.props;
         if (returnData1.data !== undefined) {
-          return  <KeySelect
-                returnData = {returnData1}
-                compareKeyChains = {this.state.compareKeyChains}
+            return <KeySelect
+                returnData={returnData1}
+                keys={keys}
+                compareKeyChains={this.state.compareKeyChains}
                 selectedKeysUpdated={(selectedKeys) => this.handleSelectionChange(selectedKeys)}
             />
         }
