@@ -1,14 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import './App.css';
-import Endpoint from './components/Endpoint';
-import Mode from './components/Mode';
-import Panel from "./components/Panel";
-import Menu from "./components/Menu";
-import MenuIcon from "./components/MenuIcon";
-import Split from "./components/Split";
-import ActionButton from "./components/ActionButton";
-
+import {Endpoint, Mode, Panel, Menu, MenuIcon, Split, ActionButton} from './components/index.js';
 
 class App extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import FilteredMultiSelect from 'react-filtered-multiselect';
-import ActionButton from "./ActionButton"; //Found at https://react.rocks/example/react-filtered-multiselect
+import './KeySelect.css';
 
 
 class KeySelect extends Component {
@@ -37,7 +37,9 @@ class KeySelect extends Component {
 
             this.props.compareKeyChains.forEach((singleCompareKeyChain) => {
                 selectedRows.push(<tr key={singleCompareKeyChain + 'row'}>
-                    <td key={singleCompareKeyChain + 'cell'}>
+                    <td className={'cellAlignLeft'}
+                        width="99%"
+                        key={singleCompareKeyChain + 'cell'}>
                         {singleCompareKeyChain}
                     </td>
                 </tr>)
@@ -76,7 +78,7 @@ class KeySelect extends Component {
         });
     };
 
-    clearSelected = () => {//TODO - mention this in Fireside and ask opinion. Putting the phat arrow function on the declaration.
+    clearSelected = () => {
         this.props.selectedKeysUpdated([]);//TODO should we be checking that this prop is not undefined?
     }
 
@@ -84,7 +86,7 @@ class KeySelect extends Component {
         return (
             <div className="KeySelect">
                 {this.getMultiSelect()}
-                <ActionButton text=" Clear " onClick={this.clearSelected}/>
+                <button className={'clearButton'} onClick={this.clearSelected}>{'Clear'} </button>
                 {this.getSelectedKeys()}
             </div>
         );
