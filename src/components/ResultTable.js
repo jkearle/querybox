@@ -161,11 +161,15 @@ class ResultTable extends Component {
         let compareObject = undefined;
         let checkDiff = true;
 
-        keys.forEach((s) => {//TODO should there be try catches or check that key is valid
+        keys.forEach((s) => {
             if (currentObject === undefined) {
-                currentObject = returnData[s];
+                if(s in returnData) {
+                    currentObject = returnData[s];
+                }
             } else {
-                currentObject = currentObject[s];
+                if(s in currentObject) {
+                    currentObject = currentObject[s];
+                }
             }
         });
 
@@ -176,13 +180,13 @@ class ResultTable extends Component {
                     if (s in compareReturnData) {
                         compareObject = compareReturnData[s];
                     } else {
-                        checkDiff = true;
+                        checkDiff = false;
                     }
                 } else {
                     if (s in compareObject) {
                         compareObject = compareObject[s];
                     } else {
-                        checkDiff = true;
+                        checkDiff = false;
                     }
                 }
             });

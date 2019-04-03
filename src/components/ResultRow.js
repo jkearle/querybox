@@ -16,8 +16,9 @@ class ResultRow extends Component {
         let resultsCells = [];
         let color = NO_DIFF_COLOR;
 
-        if (cellsText.length === cellsDiffState.length) {
-            for (let i = 0; i < cellsText.length; i++) {//TODO should I type check to make sure that the variable is an array
+        if (Array.isArray(cellsText) &&
+            (cellsText.length === cellsDiffState.length)) {
+            for (let i = 0; i < cellsText.length; i++) {
                 let cellDiffState = cellsDiffState[i];
                 if (cellDiffState === DIFFERENT) {
                     color = DIFFERENT_COLOR;

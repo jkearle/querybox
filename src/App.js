@@ -74,7 +74,7 @@ class App extends Component {
         }
     }
 
-    findAllKeys(base, keyArray, jsonObject) {//TODO Should we move this redux?
+    findAllKeys(base, keyArray, jsonObject) {//Candidate for Redux
         Object.keys(jsonObject).forEach((keyValue) => {
             if (typeof jsonObject[keyValue] == 'object' && jsonObject[keyValue] !== null) {//If it's an object we need to call this function on the object to get the child keys
                 //get the children
