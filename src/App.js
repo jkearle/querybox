@@ -29,6 +29,7 @@ class App extends Component {
             panelNumber: 0,
             results1: {},
             results2: {},
+            keys: {},
             statusText: 'Waiting for User'
         };
 
@@ -47,9 +48,16 @@ class App extends Component {
             axios.post(this.state.endpoint, post)
                 .then(response => {
                     console.log("Axios Response => " + response.toString());
+
+                    let selectKeys = [];
+                    if (response.data !== undefined) {
+                        this.findAllKeys('', selectKeys, response.data);
+                    }
+
                     this.setState({
                         results1: response,
-                        statusText: 'Response Received'
+                        statusText: 'Response Received',
+                        keys: selectKeys
                     });
                 }).catch(error => {
                 this.setState({
@@ -65,6 +73,29 @@ class App extends Component {
             }
         }
     }
+
+    findAllKeys(base, keyArray, jsonObject) {//TODO Should we move this redux?
+        Object.keys(jsonObject).forEach((keyValue) => {
+            if (typeof jsonObject[keyValue] == 'object' && jsonObject[keyValue] !== null) {//If it's an object we need to call this function on the object to get the child keys
+                //get the children
+                if (jsonObject instanceof Array && keyValue !== '0') {//If it's an array, just iterate over the first one and return on the rest
+                    return;
+                }
+                if (base === '') {
+                    this.findAllKeys(keyValue, keyArray, jsonObject[keyValue]);
+                } else {
+                    this.findAllKeys(base + '.' + keyValue, keyArray, jsonObject[keyValue]);
+                }
+            } else {
+                if (base === '') {
+                    keyArray.push({text: keyValue, value: keyValue});
+                } else {
+                    keyArray.push({text: base + '.' + keyValue, value: base + '.' + keyValue});
+                }
+
+            }
+        });
+    };
 
     handleQuery(queryNumber, close = null, state = {}) {
         let panelQuery = "";
@@ -167,6 +198,7 @@ class App extends Component {
                         query2={this.state.query2}
                         results1={this.state.results1}
                         results2={this.state.results2}
+                        keys={this.state.keys}
                         queryClick={(number) => this.handleQuery(number)}
                     />
                 </div>
