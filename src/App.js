@@ -28,7 +28,8 @@ class App extends Component {
             panelQuery: "",
             panelNumber: 0,
             results1: {},
-            results2: {}
+            results2: {},
+            statusText: 'Waiting for User'
         };
 
         document.addEventListener("mousedown", this.handleOffClick.bind(this));
@@ -46,8 +47,15 @@ class App extends Component {
             axios.post(this.state.endpoint, post)
                 .then(response => {
                     console.log("Axios Response => " + response.toString());
-                    this.setState({results1: response});
+                    this.setState({
+                        results1: response,
+                        statusText: 'Response Received'
+                    });
+                }).catch(error => {
+                this.setState({
+                    statusText: 'Error occurred => ' + error.message
                 });
+            });
 
             if (this.state.split) {
                 axios.post(this.state.endpoint, JSON.parse(this.state.query2))
@@ -141,7 +149,8 @@ class App extends Component {
                     <div className="Body-Top">
                         <div className="Body-Top-Endpoint">
                             <Endpoint endpoint={this.state.endpoint}
-                                      save={(endpoint) => this.setState({endpoint: endpoint})}/>
+                                      save={(endpoint) => this.setState({endpoint: endpoint})}
+                                      statusText={this.state.statusText}/>
                         </div>
                         <div className="Body-Top-Button">
                             <ActionButton text="Go" onClick={() => this.executeRequests()}/>
