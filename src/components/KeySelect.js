@@ -61,7 +61,7 @@ class KeySelect extends Component {
         if (selectedKeysUpdated !== undefined) {
             selectedKeysUpdated([]);
         }
-    }
+    };
 
     render() {
         return (
