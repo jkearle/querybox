@@ -3,9 +3,11 @@ import './Stats.css';
 
 class Stats extends Component {
     render() {
-        let took = "n/a";
+        const {took} = this.props;
+
+        let tookString = "n/a";
         if (typeof this.props.took !== "undefined") {
-            took = this.props.took;
+            tookString = this.props.took;
         }
 
         return (
@@ -13,7 +15,7 @@ class Stats extends Component {
                 <tbody>
                     <tr>
                         <th>Took:</th>
-                        <td>{took}</td>
+                        <td>{tookString}</td>
                     </tr>
                 </tbody>
             </table>

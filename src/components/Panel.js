@@ -31,12 +31,12 @@ class Panel extends Component {
     }
 
     render() {
-        let compclass = "Panel";
+        let compClass = "Panel";
         if (this.props.open) {
-            compclass = "Panel visible"
+            compClass = "Panel visible"
         }
         return (
-            <div className={compclass}>
+            <div className={compClass}>
                 <div className="panel_content">
                     <p className="error">{this.state.message}</p>
                     <button onClick={this.props.save}>Save</button>

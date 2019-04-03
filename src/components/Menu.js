@@ -3,12 +3,12 @@ import './Menu.css';
 
 class Menu extends Component {
     render() {
-        let compclass = "Menu";
+        let compClass = "Menu";
         if (this.props.open) {
-            compclass = "Menu visible"
+            compClass = "Menu visible"
         }
         return (
-            <div className={compclass}>
+            <div className={compClass}>
 
             </div>
         );

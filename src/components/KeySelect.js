@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import FilteredMultiSelect from 'react-filtered-multiselect';
 import './KeySelect.css';
 
-
 class KeySelect extends Component {
     handleSelectionChange = (selection) => {
         const {selectedKeysUpdated} = this.props;
@@ -27,8 +26,7 @@ class KeySelect extends Component {
                 options={keys}
                 textProp="text"
                 valueProp="value"
-                size={6}
-            />;
+                size={6} />;
         }
     }
 

@@ -4,6 +4,8 @@ import {Query}  from "../components";
 
 class SplitQuery extends Component {
     render() {
+        const {queryClick} = this.props;
+
         let secondItem = "SplitItem";
         if (!this.props.split) {
             secondItem += " SplitHidden";
@@ -13,10 +15,10 @@ class SplitQuery extends Component {
             <div className="Split">
                 <div className="SplitGrid">
                     <div className="SplitItem">
-                        <Query query={this.props.query1} onClick={() => this.props.queryClick(1)}/>
+                        <Query query={this.props.query1} onClick={() => queryClick(1)}/>
                     </div>
                     <div className={secondItem}>
-                        <Query query={this.props.query2} onClick={() => this.props.queryClick(2)}/>
+                        <Query query={this.props.query2} onClick={() => queryClick(2)}/>
                     </div>
                 </div>
             </div>
