@@ -5,12 +5,17 @@ import './KeySelect.css';
 
 class KeySelect extends Component {
     handleSelectionChange = (selection) => {
+        const {selectedKeysUpdated} = this.props;
         selection.forEach((s) => {
-            if (!this.props.compareKeyChains.includes(s.value)) {
-                this.props.compareKeyChains.push(s.value)//TODO Do we need to guarantee this is an array?
+            if (this.props.compareKeyChains !== undefined  && Array.isArray(this.props.compareKeyChains)) {
+                if (!this.props.compareKeyChains.includes(s.value)) {
+                    this.props.compareKeyChains.push(s.value)
+                }
             }
         });
-        this.props.selectedKeysUpdated(this.props.compareKeyChains);
+        if(selectedKeysUpdated !== undefined) {
+            selectedKeysUpdated(this.props.compareKeyChains);
+        }
     };
 
     getMultiSelect() {
@@ -51,9 +56,11 @@ class KeySelect extends Component {
     }
 
 
-
     clearSelected = () => {
-        this.props.selectedKeysUpdated([]);//TODO should we be checking that this prop is not undefined?
+        const {selectedKeysUpdated} = this.props;
+        if (selectedKeysUpdated !== undefined) {
+            selectedKeysUpdated([]);
+        }
     }
 
     render() {
