@@ -8,11 +8,12 @@
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-filtered-multiselect": "^0.5.1",
+    "react-inspector": "^3.0.2",
     "react-redux": "^7.0.1",
     "react-scripts": "2.1.5",
+    "react-simple-code-editor": "^0.9.3",
     "redux": "^4.0.1",
-    "typescript": "^3.4.2",
-    "react-simple-code-editor": "^0.9.3"
+    "typescript": "^3.4.2"
   },
   "scripts": {
     "start": "react-scripts start",
