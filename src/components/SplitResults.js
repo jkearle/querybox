@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './SplitResults.css';
-import Inspector from 'react-inspector'; //Found at https://www.npmjs.com/package/react-inspector
+//import Inspector from 'react-inspector'; //Found at https://www.npmjs.com/package/react-inspector
 import {Stats, ResultTable, KeySelect} from "./index";
 
 
@@ -47,9 +47,9 @@ class SplitResults extends Component {
     }
 
     getJsonTree(results) {
-        if (results.data !== undefined && this.state.showJson) {
-            return <Inspector data={results.data}/>
-        }
+        //if (results.data !== undefined && this.state.showJson) {
+        //    return <Inspector data={results.data}/>
+        //}
     }
 
     getResultsTable(returnData, compareReturnData) {
