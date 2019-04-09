@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import './App.css';
 import {Endpoint, Mode, Panel, Menu, MenuIcon, Split, ActionButton} from './components/index.js';
+import {Provider} from 'react-redux';
+import reducers from './reducers';
+import {createStore} from "redux";
 
 class App extends Component {
     constructor(props) {
@@ -171,44 +174,46 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
-                <header>
-                    <MenuIcon onClick={() => this.handleMenu()}/>
-                    QueryBox
-                </header>
-                <div className="App-Body">
-                    <div className="Body-Top">
-                        <div className="Body-Top-Endpoint">
-                            <Endpoint endpoint={this.state.endpoint}
-                                      save={(endpoint) => this.setState({endpoint: endpoint})}
-                                      statusText={this.state.statusText}/>
+            <Provider store={createStore(reducers)}>
+                <div className="App">
+                    <header>
+                        <MenuIcon onClick={() => this.handleMenu()}/>
+                        QueryBox
+                    </header>
+                    <div className="App-Body">
+                        <div className="Body-Top">
+                            <div className="Body-Top-Endpoint">
+                                <Endpoint endpoint={this.state.endpoint}
+                                          save={(endpoint) => this.setState({endpoint: endpoint})}
+                                          statusText={this.state.statusText}/>
+                            </div>
+                            <div className="Body-Top-Button">
+                                <ActionButton text="Go" onClick={() => this.executeRequests()}/>
+                            </div>
                         </div>
-                        <div className="Body-Top-Button">
-                            <ActionButton text="Go" onClick={() => this.executeRequests()}/>
-                        </div>
+                        <Mode
+                            single={() => this.handleMode(false)}
+                            compare={() => this.handleMode(true)}
+                            split={this.state.split}
+                        />
+                        <Split
+                            split={this.state.split}
+                            query1={this.state.query1}
+                            query2={this.state.query2}
+                            results1={this.state.results1}
+                            results2={this.state.results2}
+                            keys={this.state.keys}
+                            queryClick={(number) => this.handleQuery(number)}
+                        />
                     </div>
-                    <Mode
-                        single={() => this.handleMode(false)}
-                        compare={() => this.handleMode(true)}
-                        split={this.state.split}
-                    />
-                    <Split
-                        split={this.state.split}
-                        query1={this.state.query1}
-                        query2={this.state.query2}
-                        results1={this.state.results1}
-                        results2={this.state.results2}
-                        keys={this.state.keys}
-                        queryClick={(number) => this.handleQuery(number)}
-                    />
+                    <Panel
+                        open={this.state.panel}
+                        query={this.state.panelQuery}
+                        update={(query) => this.setState({panelQuery: query})}
+                        save={() => this.handleQuerySave()}/>
+                    {/*<Menu open={this.state.menu}/>--> */}
                 </div>
-                <Panel
-                    open={this.state.panel}
-                    query={this.state.panelQuery}
-                    update={(query) => this.setState({panelQuery: query})}
-                    save={() => this.handleQuerySave()}/>
-                {/*<Menu open={this.state.menu}/>--> */}
-            </div>
+            </Provider>
         );
     }
 }
