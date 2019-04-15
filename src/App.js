@@ -10,19 +10,8 @@ class App extends Component {
         this.state = {
             split: false,
             panel: false,
-            endpoint: `http://10.12.51.25:9200/offers/offer/_search`,
-            query1: "{\n" +
-                "    \"size\": 100,\n" +
-                "    \"query\": {\n" +
-                "        \"filtered\": {\n" +
-                "            \"filter\": {\n" +
-                "                \"missing\": {\n" +
-                "                    \"field\": \"editorial_body\"\n" +
-                "                }\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}",
+            endpoint: ``,
+            query1: "",
             query2: "",
             panelQuery: "",
             panelNumber: 0,
