@@ -28,8 +28,10 @@
     display: grid;
 }
 
-.panel_content .container_editor {
+.panel_content .panel_editor {
     grid-area: containereditor;
+    max-height: 100%;
+    overflow: auto;
 }
 
 .panel_content .error {

@@ -1,11 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './Endpoint.css';
 
 class Endpoint extends Component {
     render() {
         return (
             <div className="Endpoint Component">
-                <label htmlFor="endpoint">Search Endpoint</label>
+                <div className={'labelsDiv'}>
+                    <div className={'endpointLabelDiv'}>
+                        <label htmlFor="endpoint">Search Endpoint</label>
+                    </div>
+                    <div className={'statusLabelDiv'}>
+                        <label>{'Status:' + this.props.statusText}</label>
+                    </div>
+                </div>
                 <input
                     name="endpoint"
                     type="text"

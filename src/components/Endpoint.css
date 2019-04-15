@@ -2,8 +2,18 @@
     padding-right: 7px;
 }
 
-.Endpoint label {
+.labelsDiv {
+    display: flex;
+}
+
+.endpointLabelDiv {
     display: block;
+    width: 50%;
+}
+
+.statusLabelDiv  {
+    float: right;
+    width: 50%;
 }
 
 .Endpoint input[type=text] {

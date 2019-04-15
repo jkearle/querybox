@@ -1,30 +1,24 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import './App.css';
-import Endpoint from './components/Endpoint';
-import Mode from './components/Mode';
-import Panel from "./components/Panel";
-import Menu from "./components/Menu";
-import MenuIcon from "./components/MenuIcon";
-import Split from "./components/Split";
-import ActionButton from "./components/ActionButton";
+import {Endpoint, Mode, Panel, Split, ActionButton} from './components/index.js';
 
 class App extends Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
-            menu: false,
             split: false,
             panel: false,
-            endpoint: "",
+            endpoint: ``,
             query1: "",
             query2: "",
-            panelquery: "",
-            panelnumber: 0,
+            panelQuery: "",
+            panelNumber: 0,
             results1: {},
-            results2: {}
+            results2: {},
+            keys: {},
+            statusText: 'Waiting for User'
         };
 
         document.addEventListener("mousedown", this.handleOffClick.bind(this));
@@ -36,14 +30,28 @@ class App extends Component {
             if (this.state.query1) {
                 try {
                     post = JSON.parse(this.state.query1);
-                } catch(e) {
-
+                } catch (e) {
                 }
             }
             axios.post(this.state.endpoint, post)
                 .then(response => {
-                    this.setState({results1: response})
+                    console.log("Axios Response => " + response.toString());
+
+                    let selectKeys = [];
+                    if (response.data !== undefined) {
+                        this.findAllKeys('', selectKeys, response.data);
+                    }
+
+                    this.setState({
+                        results1: response,
+                        statusText: 'Response Received',
+                        keys: selectKeys
+                    });
+                }).catch(error => {
+                this.setState({
+                    statusText: 'Error occurred => ' + error.message
                 });
+            });
 
             if (this.state.split) {
                 axios.post(this.state.endpoint, JSON.parse(this.state.query2))
@@ -54,23 +62,46 @@ class App extends Component {
         }
     }
 
-    handleQuery(querynumber, close = null, state = {}) {
-        let panelquery = "";
-        let panelnumber = 0;
+    findAllKeys(base, keyArray, jsonObject) {//Candidate for Redux
+        Object.keys(jsonObject).forEach((keyValue) => {
+            if (typeof jsonObject[keyValue] == 'object' && jsonObject[keyValue] !== null) {//If it's an object we need to call this function on the object to get the child keys
+                //get the children
+                if (jsonObject instanceof Array && keyValue !== '0') {//If it's an array, just iterate over the first one and return on the rest
+                    return;
+                }
+                if (base === '') {
+                    this.findAllKeys(keyValue, keyArray, jsonObject[keyValue]);
+                } else {
+                    this.findAllKeys(base + '.' + keyValue, keyArray, jsonObject[keyValue]);
+                }
+            } else {
+                if (base === '') {
+                    keyArray.push({text: keyValue, value: keyValue});
+                } else {
+                    keyArray.push({text: base + '.' + keyValue, value: base + '.' + keyValue});
+                }
+
+            }
+        });
+    };
+
+    handleQuery(queryNumber, close = null, state = {}) {
+        let panelQuery = "";
+        let panelNumber = 0;
         const panel = this.state.panel;
         if (close === null) {
             close = panel;
         }
-        if (close === false && querynumber === 1) {
-            panelquery = this.state.query1;
-            panelnumber = querynumber;
-        } else if (close === false && querynumber === 2) {
-            panelquery = this.state.query2;
-            panelnumber = querynumber;
+        if (close === false && queryNumber === 1) {
+            panelQuery = this.state.query1;
+            panelNumber = queryNumber;
+        } else if (close === false && queryNumber === 2) {
+            panelQuery = this.state.query2;
+            panelNumber = queryNumber;
         }
 
-        state.panelquery = panelquery;
-        state.panelnumber = panelnumber;
+        state.panelQuery = panelQuery;
+        state.panelNumber = panelNumber;
         if (close === true) {
             state.panel = false;
         } else {
@@ -81,14 +112,14 @@ class App extends Component {
     }
 
     handleQuerySave() {
-        let query = this.state.panelquery;
+        let panelQuery = this.state.panelQuery;
         let query1 = this.state.query1;
         let query2 = this.state.query2;
-        let querynumber = this.state.panelnumber;
-        if (querynumber === 1) {
-            query1 = query;
-        } else if (querynumber === 2) {
-            query2 = query;
+        let queryNumber = this.state.panelNumber;
+        if (queryNumber === 1) {
+            query1 = panelQuery;
+        } else if (queryNumber === 2) {
+            query2 = panelQuery;
         }
 
         let state = {query1: query1, query2: query2};
@@ -99,25 +130,8 @@ class App extends Component {
         this.setState({split: split})
     }
 
-    handleMenu(close = null) {
-        const menu = this.state.menu;
-        if (close === null) {
-            close = menu;
-        }
-        if (close === true) {
-            this.setState({menu: false});
-        } else {
-            this.setState({menu: true});
-        }
-    }
 
     handleOffClick(e) {
-        const isMenu = e.target.className === "MenuIcon" || e.target.className === "Menu visible";
-        const isMenuAncestor = e.target.closest(".Menu");
-        if (!isMenu && !isMenuAncestor) {
-            this.handleMenu(true);
-        }
-
         const isQuery = e.target.className === "Query component";
         const isPanel = e.target.className === "Panel visible";
         const isPanelAncestor = e.target.closest(".Panel");
@@ -130,13 +144,14 @@ class App extends Component {
         return (
             <div className="App">
                 <header>
-                    <MenuIcon onClick={() => this.handleMenu()}/>
                     QueryBox
                 </header>
                 <div className="App-Body">
                     <div className="Body-Top">
                         <div className="Body-Top-Endpoint">
-                            <Endpoint endpoint={this.state.endpoint} save={(endpoint) => this.setState({endpoint: endpoint})}/>
+                            <Endpoint endpoint={this.state.endpoint}
+                                      save={(endpoint) => this.setState({endpoint: endpoint})}
+                                      statusText={this.state.statusText}/>
                         </div>
                         <div className="Body-Top-Button">
                             <ActionButton text="Go" onClick={() => this.executeRequests()}/>
@@ -153,15 +168,15 @@ class App extends Component {
                         query2={this.state.query2}
                         results1={this.state.results1}
                         results2={this.state.results2}
+                        keys={this.state.keys}
                         queryClick={(number) => this.handleQuery(number)}
                     />
                 </div>
                 <Panel
                     open={this.state.panel}
-                    query={this.state.panelquery}
-                    update={(query) => this.setState({panelquery: query})}
+                    query={this.state.panelQuery}
+                    update={(query) => this.setState({panelQuery: query})}
                     save={() => this.handleQuerySave()}/>
-                <Menu open={this.state.menu}/>
             </div>
         );
     }

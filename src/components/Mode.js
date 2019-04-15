@@ -3,16 +3,18 @@ import './Mode.css';
 
 class Mode extends Component {
     render() {
-        let singleclass = "selected";
-        let compareclass = "";
+        const {single, compare} = this.props;
+
+        let singleClass = "selected";
+        let compareClass = "";
         if (this.props.split) {
-            singleclass = "";
-            compareclass = "selected";
+            singleClass = "";
+            compareClass = "selected";
         }
         return (
             <div className="Mode Component">
-                <button className={singleclass} onClick={this.props.single}>Single</button>
-                <button className={compareclass} onClick={this.props.compare}>Compare</button>
+                <button className={singleClass} onClick={single}>Single</button>
+                <button className={compareClass} onClick={compare}>Compare</button>
             </div>
         );
     }

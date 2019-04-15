@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './Panel.css'
 import Editor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
+import {highlight, languages} from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-dark.css'
 
@@ -13,7 +13,6 @@ class Panel extends Component {
         this.state = {
             message: ""
         };
-
     }
 
     format(json) {
@@ -28,28 +27,29 @@ class Panel extends Component {
                 this.setState({message: "This is invalid JSON"});
             }
         }
-
         return formatted;
     }
 
     render() {
-        let compclass = "Panel";
+        let compClass = "Panel";
         if (this.props.open) {
-            compclass = "Panel visible"
+            compClass = "Panel visible"
         }
         return (
-            <div className={compclass}>
+            <div className={compClass}>
                 <div className="panel_content">
                     <p className="error">{this.state.message}</p>
                     <button onClick={this.props.save}>Save</button>
-                    <Editor
-                        placeholder="Enter your JSON query…"
-                        value={this.props.query}
-                        highlight={code => highlight(code, languages.json)}
-                        padding={10}
-                        onValueChange={code => this.props.update(this.format(code))}
-                        className="container_editor"
-                    />
+                    <div className={'panel_editor'}>
+                        <Editor
+                            placeholder="Enter your JSON query…"
+                            value={this.props.query}
+                            highlight={code => highlight(code, languages.json)}
+                            padding={10}
+                            onValueChange={code => this.props.update(this.format(code))}
+                            className="container_editor"
+                        />
+                    </div>
                 </div>
             </div>
         );

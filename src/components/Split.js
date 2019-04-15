@@ -1,37 +1,22 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './Split.css';
-import Query from "./Query";
-import ResultTable from "./ResultTable";
-import Stats from "./Stats";
+import {SplitQuery, SplitResults} from "../components";
+
 
 class Split extends Component {
     render() {
-        let gridstate = "SplitGrid";
-        if (!this.props.split) {
-            gridstate += " SplitGridSingle";
-        }
-        const took = 0;
+        const {queryClick} = this.props;
+
         return (
             <div className="Split">
-                <div className={gridstate}>
-                    <div className="SplitQuery1">
-                        <Query query={this.props.query1} onClick={() => this.props.queryClick(1)}/>
-                        <Stats took={took}/>
-                    </div>
-                    <div className="SplitQuery2">
-                        <Query query={this.props.query2} onClick={() => this.props.queryClick(2)}/>
-                        <Stats took={this.props.took2}/>
-                    </div>
-                    <div className="SplitResults1">
-                        <ResultTable results={this.props.results1}/>
-                    </div>
-                    <div className="SplitSelection">
-                        This is where the multi-select goes
-                    </div>
-                    <div className="SplitResults2">
-                        <ResultTable results={this.props.results2}/>
-                    </div>
-                </div>
+                <SplitQuery split={this.props.split}
+                            query1={this.props.query1}
+                            query2={this.props.query2}
+                            queryClick={queryClick}/>
+                <SplitResults split={this.props.split}
+                              returnData1={this.props.results1}
+                              returnData2={this.props.results2}
+                              keys={this.props.keys}/>
             </div>
         );
     }
