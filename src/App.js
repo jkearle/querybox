@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import './App.css';
-import {Endpoint, Mode, Panel, Menu, MenuIcon, Split, ActionButton} from './components/index.js';
+import {Endpoint, Mode, Panel, Split, ActionButton} from './components/index.js';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            menu: false,
             split: false,
             panel: false,
             endpoint: `http://10.12.51.25:9200/offers/offer/_search`,
@@ -142,25 +141,8 @@ class App extends Component {
         this.setState({split: split})
     }
 
-    handleMenu(close = null) {
-        const menu = this.state.menu;
-        if (close === null) {
-            close = menu;
-        }
-        if (close === true) {
-            this.setState({menu: false});
-        } else {
-            this.setState({menu: true});
-        }
-    }
 
     handleOffClick(e) {
-        const isMenu = e.target.className === "MenuIcon" || e.target.className === "Menu visible";
-        const isMenuAncestor = e.target.closest(".Menu");
-        if (!isMenu && !isMenuAncestor) {
-            this.handleMenu(true);
-        }
-
         const isQuery = e.target.className === "Query component";
         const isPanel = e.target.className === "Panel visible";
         const isPanelAncestor = e.target.closest(".Panel");
@@ -173,7 +155,6 @@ class App extends Component {
         return (
             <div className="App">
                 <header>
-                    <MenuIcon onClick={() => this.handleMenu()}/>
                     QueryBox
                 </header>
                 <div className="App-Body">
@@ -207,7 +188,6 @@ class App extends Component {
                     query={this.state.panelQuery}
                     update={(query) => this.setState({panelQuery: query})}
                     save={() => this.handleQuerySave()}/>
-                {/*<Menu open={this.state.menu}/>--> */}
             </div>
         );
     }
