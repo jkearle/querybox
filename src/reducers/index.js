@@ -1,10 +1,10 @@
 import {combineReducers} from "redux";
 import returnData from './returndataReducer';
-import url from './queryReducer';
-import query from './urlReducer';
+import query from './queryReducer';
+import url from './urlReducer';
 
 export default combineReducers({
-    returnData,//this is the reducer function
+    returnData,//this is the reducer function - but is also the state key name
     url,
     query
 });

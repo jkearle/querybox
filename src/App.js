@@ -5,6 +5,7 @@ import {Endpoint, Mode, Panel, Split, ActionButton} from './components/index.js'
 import {Provider} from 'react-redux';
 import reducers from './reducers';
 import {createStore} from "redux";
+const store = createStore(reducers);
 
 class App extends Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class App extends Component {
         this.state = {
             split: false,
             panel: false,
-            endpoint: `http://10.12.51.25:9200/offers/offer/_search`,
+            endpoint: ``,
             query1: "{\n" +
                 "    \"size\": 100,\n" +
                 "    \"query\": {\n" +
@@ -155,8 +156,11 @@ class App extends Component {
     }
 
     render() {
+
+
+
         return (
-            <Provider store={createStore(reducers)}>
+            <Provider store={store}>
                 <div className="App">
                     <header>
                         QueryBox
@@ -164,9 +168,7 @@ class App extends Component {
                     <div className="App-Body">
                         <div className="Body-Top">
                             <div className="Body-Top-Endpoint">
-                                <Endpoint endpoint={this.state.endpoint}
-                                          save={(endpoint) => this.setState({endpoint: endpoint})}
-                                          statusText={this.state.statusText}/>
+                                <Endpoint statusText={this.state.statusText}/>
                             </div>
                             <div className="Body-Top-Button">
                                 <ActionButton text="Go" onClick={() => this.executeRequests()}/>
