@@ -6,8 +6,8 @@ class Stats extends Component {
         const {took} = this.props;
 
         let tookString = "n/a";
-        if (typeof this.props.took !== "undefined") {
-            tookString = this.props.took;
+        if (typeof took !== "undefined") {
+            tookString = took;
         }
 
         return (
