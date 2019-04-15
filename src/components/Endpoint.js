@@ -23,12 +23,7 @@ class Endpoint extends Component {
                     value={this.props.endpoint}
                     placeholder="Example: https://127.0.0.1/_all/_search"
                     onChange={
-                        (event) => {this.props.dispatch(setUrl(event.target.value))}
-
-                            //dispatch(updateUrl(event.target.value))
-
-                            //
-                        //(event) => this.props.save(event.target.value)
+                        (event) => this.props.updateUrl(event.target.value)
                     }/>
             </div>
         );
@@ -41,10 +36,10 @@ const mapStateToProps = state => {
     return {endpoint: state.url.url};
 };
 
-/*const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
     return {
-        updateUrl: url => dispatch(setUrl(url))
+        updateUrl: url => dispatch(setUrl(url))//this particular pattern will add updateUrl to props
     }
-}*/
+}
 
-export default connect(mapStateToProps )(Endpoint);
+export default connect(mapStateToProps, mapDispatchToProps)(Endpoint);
