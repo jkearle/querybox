@@ -6,19 +6,40 @@ Call the function to creat an action. An action is a plain
 JavaScript object.
  */
 
-export function setFetch() {
-    return {type: types.FETCH_STUFF};
+export function setReturnDataAndInfo(json, returnKeys, statusText, index) {
+    if (index === 1) {
+        return {
+            type: types.SET_RECEIVED_DATA,
+            returnData: json,
+            statusText: statusText,
+            returnKeys: returnKeys,
+            index: 1
+        };
+    } else {
+        return {
+            type: types.SET_RECEIVED_DATA,
+            returnData: json,
+            statusText: statusText,
+            returnKeys: returnKeys,
+            index: 2
+        };
+    }
 }
 
-export function receiveStuff(json, index) {
+export function setReturnData(json, index) {
     if (index === 1) {
-        return {type: types.RECEIVE_STUFF, returnData1: json};
+        return {
+            type: types.SET_RECEIVED_DATA,
+            returnData: json,
+            index: 1
+        };
     } else {
-        return {type: types.RECEIVE_STUFF, returnData2: json};
+        return {
+            type: types.SET_RECEIVED_DATA,
+            returnData: json,
+            index: 2
+        };
     }
-    //TODO check and make sure what is being passed here,
-    // note "It's a good idea to pass as little data in each action as possible.
-    // For example, it's better to pass index than the whole object."
 }
 
 export function setUrl(url) {
@@ -26,10 +47,10 @@ export function setUrl(url) {
 }
 
 export function setQuery(query, index) {
-    if(index === 1) {
-        return {type: types.SET_QUERY, query1: query};
+    if (index === 1) {
+        return {type: types.SET_QUERY, query1: query, index: 1};
     } else {
-        return {type: types.SET_QUERY, query2: query};
+        return {type: types.SET_QUERY, query2: query, index: 2};
     }
 }
 

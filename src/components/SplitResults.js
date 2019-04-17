@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './SplitResults.css';
 import Inspector from 'react-inspector'; //Found at https://www.npmjs.com/package/react-inspector
 import {Stats, ResultTable, KeySelect} from "./index";
+import {connect} from 'react-redux';
 
 
 class SplitResults extends Component {
@@ -114,4 +115,12 @@ class SplitResults extends Component {
     }
 }
 
-export default SplitResults;
+const mapStateToProps = state => {
+    return {
+        returnData1: state.returnData.returnData1,
+        returnData2: state.returnData.returnData2,
+        keys: state.returnData.returnKeys
+    };
+};
+
+export default connect(mapStateToProps)(SplitResults);

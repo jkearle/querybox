@@ -1,8 +1,10 @@
-import {FETCH_STUFF, RECEIVE_STUFF} from '../actions/actionTypes';
+import {SET_RECEIVED_DATA} from '../actions/actionTypes';
 
 const initialState =  {
     returnData1: [],
-    returnData2: []
+    returnData2: [],
+    returnKeys: [],
+    statusText: 'Waiting for User'
 };
 
 //The reducer is a pure function that takes the previous state and an action, and returns the next state.
@@ -11,14 +13,20 @@ const initialState =  {
 //It shouldn't perform any side effects like API calls or router transitions.
 //These should happen before an action is dispatched.
 export default function returnData(state = initialState, action) {
-    switch (action.type) {
-        case FETCH_STUFF:
-            console.log('FETCH_STUFF Action');
-            return state;
-        case RECEIVE_STUFF:
-            console.log('RECEIVE_STUFF Action');
-            return state;
-        default:
-            return state;
+    if (action.type === SET_RECEIVED_DATA) {
+        if(action.index === 1) {
+            return Object.assign({}, state, {
+                returnData1: action.returnData,
+                returnKeys: action.returnKeys,
+                statusText: action.statusText
+            });
+        } else if (action.index === 2){
+            return Object.assign({}, state, {
+                returnData2: action.returnData,
+            });
+        }
+        return state;
+    } else {
+        return state;
     }
 }

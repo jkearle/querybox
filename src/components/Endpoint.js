@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 
 class Endpoint extends Component {
     render() {
-        console.log('Endpoint render');
         return (
             <div className="Endpoint Component">
                 <div className={'labelsDiv'}>
@@ -31,15 +30,19 @@ class Endpoint extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log('state.url - ' + state.url.url);
-    //debugger;
     return {endpoint: state.url.url};
 };
 
-const mapDispatchToProps = dispatch => {
+//Two different ways of hooking up the dispatch functions. This one is with functions, the latter is with objects
+/*const mapDispatchToProps = dispatch => {
     return {
         updateUrl: url => dispatch(setUrl(url))//this particular pattern will add updateUrl to props
     }
+}
+ */
+
+const mapDispatchToProps = {
+    updateUrl: (url) => setUrl(url)//this particular pattern will add updateUrl to props
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Endpoint);
