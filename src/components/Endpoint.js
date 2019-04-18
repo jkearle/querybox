@@ -30,7 +30,10 @@ class Endpoint extends Component {
 }
 
 const mapStateToProps = state => {
-    return {endpoint: state.url.url};
+    return {
+        endpoint: state.url.url,
+        statusText: state.returnData.statusText
+    };
 };
 
 //Two different ways of hooking up the dispatch functions. This one is with functions, the latter is with objects

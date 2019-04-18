@@ -17,16 +17,17 @@ class Panel extends Component {
 
     format(json) {
         let formatted = json;
-        this.setState({message: ""});
+        let message = '';
 
         if (json !== "") {
             try {
                 let parsed = JSON.parse(json);
                 formatted = JSON.stringify(parsed, null, 2);
             } catch (e) {
-                this.setState({message: "This is invalid JSON"});
+                message =  "This is invalid JSON";
             }
         }
+        this.setState({message: message});
         return formatted;
     }
 

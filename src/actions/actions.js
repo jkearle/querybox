@@ -46,6 +46,14 @@ export function setUrl(url) {
     return {type: types.SET_URL, url: url};
 }
 
+export function setSplitState(split) {
+    return {type: types.SET_SPLIT_MODE, split: split};
+}
+
+export function setPanelDisplayState(showPanel) {
+    return {type: types.SET_PANEL_STATE, showPanel: showPanel};
+}
+
 export function setQuery(query, index) {
     if (index === 1) {
         return {type: types.SET_QUERY, query1: query, index: 1};

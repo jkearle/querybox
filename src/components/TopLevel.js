@@ -3,15 +3,15 @@ import axios from 'axios/index';
 import './TopLevel.css';
 import {Endpoint, Mode, Panel, Split, ActionButton} from './index.js';
 import {connect} from 'react-redux';
-import {setReturnDataAndInfo, setReturnData} from "../actions/actions";
+import {setReturnDataAndInfo, setReturnData, setPanelDisplayState, setSplitState} from "../actions/actions";
 
 class TopLevel extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            split: false,
-            panel: false,
+            //split: false,
+            //panel: false,
             //endpoint: ``,
             /*query1: "{\n" +
                 "    \"size\": 100,\n" +
@@ -102,6 +102,7 @@ class TopLevel extends Component {
     };
 
     handleQuery(queryNumber, close = null, state = {}) {
+        /*
         let panelQuery = "";
         let panelNumber = 0;
         const panel = this.state.panel;
@@ -122,9 +123,10 @@ class TopLevel extends Component {
             state.panel = false;
         } else {
             state.panel = true;
-        }
+        }*///FIXME ....maybe, moving this to redux may take care of all this handling
 
-        this.setState(state);
+        //this.setState(state);
+        this.props.setPanelDisplayState(!close)
     }
 
     handleQuerySave() {
@@ -143,7 +145,8 @@ class TopLevel extends Component {
     }
 
     handleMode(split) {
-        this.setState({split: split})
+        this.props.setSplitState(split);
+        //this.setState({split: split})
     }
 
 
@@ -152,7 +155,8 @@ class TopLevel extends Component {
         const isPanel = e.target.className === "Panel visible";
         const isPanelAncestor = e.target.closest(".Panel");
         if (!isQuery && !isPanel && !isPanelAncestor) {
-            this.handleQuery(null, true);
+            this.props.setPanelDisplayState(false);
+            //this.handleQuery(null, true);
         }
     }
 
@@ -165,23 +169,14 @@ class TopLevel extends Component {
                 <div className="TopLevel-Body">
                     <div className="Body-Top">
                         <div className="Body-Top-Endpoint">
-                            <Endpoint statusText={this.state.statusText}/>
+                            <Endpoint/>
                         </div>
                         <div className="Body-Top-Button">
                             <ActionButton text="Go" onClick={() => this.executeRequests()}/>
                         </div>
                     </div>
-                    <Mode
-                        single={() => this.handleMode(false)}
-                        compare={() => this.handleMode(true)}
-                        split={this.state.split}
-                    />
-                    <Split
-                        split={this.state.split}
-                        query1={this.props.query1}
-                        query2={this.props.query2}
-                        queryClick={(number) => this.handleQuery(number)}
-                    />
+                    <Mode/>
+                    <Split queryClick={(number) => this.handleQuery(number)}/>
                 </div>
                 <Panel
                     open={this.state.panel}
@@ -198,12 +193,16 @@ const mapStateToProps = state => {
         endpoint: state.url.url,
         query1: state.query.query1,
         query2: state.query.query2,
+        split: state.visualState.split,
+        panel: state.visualState.showPanel
     };
 };
 
 const mapDispatchToProps = {
     updateReturnDataAndInfo: (jsonData, jsonKeys, statusText, index) => setReturnDataAndInfo(jsonData, jsonKeys, statusText, index),
-    updateReturnData: (jsonData, index) => setReturnData(jsonData, index)
+    updateReturnData: (jsonData, index) => setReturnData(jsonData, index),
+    setPanelDisplayState:(showPanel) => setPanelDisplayState(showPanel),
+    setSplitState: (split) => setSplitState(split)
 
 }
 

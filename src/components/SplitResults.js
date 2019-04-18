@@ -119,7 +119,8 @@ const mapStateToProps = state => {
     return {
         returnData1: state.returnData.returnData1,
         returnData2: state.returnData.returnData2,
-        keys: state.returnData.returnKeys
+        keys: state.returnData.returnKeys,
+        split: state.visualState.split,
     };
 };
 

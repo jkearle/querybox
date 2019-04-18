@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './Mode.css';
+import {setSplitState} from "../actions/actions";
+import {connect} from 'react-redux';
 
 class Mode extends Component {
     render() {
-        const {single, compare} = this.props;
-
         let singleClass = "selected";
         let compareClass = "";
         if (this.props.split) {
@@ -13,11 +13,21 @@ class Mode extends Component {
         }
         return (
             <div className="Mode Component">
-                <button className={singleClass} onClick={single}>Single</button>
-                <button className={compareClass} onClick={compare}>Compare</button>
+                <button className={singleClass} onClick= {() => this.props.setSplitState(false)}>Single</button>
+                <button className={compareClass} onClick={() => this.props.setSplitState(true)}>Compare</button>
             </div>
         );
     }
 }
 
-export default Mode;
+const mapStateToProps = state => {
+    return {
+        split: state.visualState.split
+    };
+};
+
+const mapDispatchToProps = {
+    setSplitState: (split) => setSplitState(split)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Mode);

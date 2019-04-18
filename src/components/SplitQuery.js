@@ -33,6 +33,7 @@ const mapStateToProps = state => {
     return {
         query1: state.query.query1,
         query2: state.query.query2,
+        split: state.visualState.split,
     };
 };
 
