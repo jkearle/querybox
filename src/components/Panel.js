@@ -4,14 +4,23 @@ import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-dark.css'
+import {connect} from 'react-redux';
+import {closeQueryPanel, setReturnData, setReturnDataAndInfo} from "../actions/actions";
 
 class Panel extends Component {
 
     constructor(props) {
         super(props);
 
+        let initialPanelText = '';
+            if(this.props.queryIndex === 1){
+                initialPanelText =  this.props.query1;
+            } else {
+                initialPanelText =  this.props.query2;
+            }
         this.state = {
-            message: ""
+            message: "",
+            panelText: initialPanelText
         };
     }
 
@@ -33,9 +42,10 @@ class Panel extends Component {
 
     render() {
         let compClass = "Panel";
-        if (this.props.open) {
+        if (this.props.showPanel) {
             compClass = "Panel visible"
         }
+
         return (
             <div className={compClass}>
                 <div className="panel_content">
@@ -44,10 +54,10 @@ class Panel extends Component {
                     <div className={'panel_editor'}>
                         <Editor
                             placeholder="Enter your JSON query…"
-                            value={this.props.query}
+                            value={this.state.panelText}
                             highlight={code => highlight(code, languages.json)}
                             padding={10}
-                            onValueChange={code => this.props.update(this.format(code))}
+                            onValueChange={code => this.setState({panelText: this.format(code)})}
                             className="container_editor"
                         />
                     </div>
@@ -57,4 +67,19 @@ class Panel extends Component {
     }
 }
 
-export default Panel;
+const mapStateToProps = state => {
+    return {
+        query1: state.query.query1,
+        query2: state.query.query2,
+        showPanel: state.visualState.showPanel,
+        queryIndex: state.visualState.queryIndex
+    };
+};
+
+const mapDispatchToProps = {
+    updateReturnDataAndInfo: (jsonData, jsonKeys, statusText, index) => setReturnDataAndInfo(jsonData, jsonKeys, statusText, index),
+    updateReturnData: (jsonData, index) => setReturnData(jsonData, index),
+    closeQueryPanel,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Panel);

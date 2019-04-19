@@ -50,16 +50,17 @@ export function setSplitState(split) {
     return {type: types.SET_SPLIT_MODE, split: split};
 }
 
-export function setPanelDisplayState(showPanel) {
-    return {type: types.SET_PANEL_STATE, showPanel: showPanel};
+export function closeQueryPanel() {
+    return {
+        type: types.SET_PANEL_STATE_CLOSED,
+    };
 }
 
-export function setQuery(query, index) {
-    if (index === 1) {
-        return {type: types.SET_QUERY, query1: query, index: 1};
-    } else {
-        return {type: types.SET_QUERY, query2: query, index: 2};
-    }
+export function showQueryPanel(sourceQueryIndex) {
+    return {
+        type: types.SET_PANEL_STATE_OPEN,
+        queryIndex: sourceQueryIndex
+    };
 }
 
 
