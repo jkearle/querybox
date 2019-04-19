@@ -44,8 +44,8 @@ class TopLevel extends Component {
                     1
                 );
             });
-            if (this.state.split) {
-                axios.post(this.state.endpoint, JSON.parse(this.state.query2))
+            if (this.props.split) {
+                axios.post(this.props.endpoint, JSON.parse(this.props.query2))
                     .then(response => {
                         this.props.updateReturnData(
                             response,
@@ -124,6 +124,7 @@ const mapStateToProps = state => {
         query1: state.query.query1,
         query2: state.query.query2,
         showPanel: state.visualState.showPanel,
+        split: state.visualState.split,
     };
 };
 
