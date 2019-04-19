@@ -5,7 +5,7 @@ import {highlight, languages} from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-dark.css'
 import {connect} from 'react-redux';
-import {closeQueryPanel, setReturnData, setReturnDataAndInfo} from "../actions/actions";
+import {closeQueryPanel, setQuery, setReturnData, setReturnDataAndInfo} from "../actions/actions";
 
 class Panel extends Component {
 
@@ -40,6 +40,12 @@ class Panel extends Component {
         return formatted;
     }
 
+    saveQueryAndClose(){
+        this.props.setQuery(this.state.panelText, this.props.queryIndex);
+        this.props.closeQueryPanel();
+    }
+
+
     render() {
         let compClass = "Panel";
         if (this.props.showPanel) {
@@ -50,7 +56,7 @@ class Panel extends Component {
             <div className={compClass}>
                 <div className="panel_content">
                     <p className="error">{this.state.message}</p>
-                    <button onClick={this.props.save}>Save</button>
+                    <button onClick={() => this.saveQueryAndClose()}>Save</button>
                     <div className={'panel_editor'}>
                         <Editor
                             placeholder="Enter your JSON query…"
@@ -80,6 +86,7 @@ const mapDispatchToProps = {
     updateReturnDataAndInfo: (jsonData, jsonKeys, statusText, index) => setReturnDataAndInfo(jsonData, jsonKeys, statusText, index),
     updateReturnData: (jsonData, index) => setReturnData(jsonData, index),
     closeQueryPanel,
+    setQuery: (query, index) => setQuery(query,index),
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Panel);

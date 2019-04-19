@@ -88,6 +88,12 @@ class TopLevel extends Component {
         }
     }
 
+    getPanel(){
+        if(this.props.showPanel){
+            return <Panel/>;
+        }
+    }
+
     render() {
         return (
             <div className="TopLevel">
@@ -106,7 +112,7 @@ class TopLevel extends Component {
                     <Mode/>
                     <Split/>
                 </div>
-                <Panel/>
+                {this.getPanel()}
             </div>
         );
     }
@@ -117,6 +123,7 @@ const mapStateToProps = state => {
         endpoint: state.url.url,
         query1: state.query.query1,
         query2: state.query.query2,
+        showPanel: state.visualState.showPanel,
     };
 };
 

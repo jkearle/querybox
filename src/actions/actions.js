@@ -7,39 +7,29 @@ JavaScript object.
  */
 
 export function setReturnDataAndInfo(json, returnKeys, statusText, index) {
-    if (index === 1) {
-        return {
-            type: types.SET_RECEIVED_DATA,
-            returnData: json,
-            statusText: statusText,
-            returnKeys: returnKeys,
-            index: 1
-        };
-    } else {
-        return {
-            type: types.SET_RECEIVED_DATA,
-            returnData: json,
-            statusText: statusText,
-            returnKeys: returnKeys,
-            index: 2
-        };
-    }
+    return {
+        type: types.SET_RECEIVED_DATA,
+        returnData: json,
+        statusText: statusText,
+        returnKeys: returnKeys,
+        index: index
+    };
 }
 
 export function setReturnData(json, index) {
-    if (index === 1) {
-        return {
-            type: types.SET_RECEIVED_DATA,
-            returnData: json,
-            index: 1
-        };
-    } else {
-        return {
-            type: types.SET_RECEIVED_DATA,
-            returnData: json,
-            index: 2
-        };
-    }
+    return {
+        type: types.SET_RECEIVED_DATA,
+        returnData: json,
+        index: index
+    };
+}
+
+export function setQuery(query, index) {
+    return {
+        type: types.SET_QUERY,
+        query: query,
+        index: index
+    };
 }
 
 export function setUrl(url) {
