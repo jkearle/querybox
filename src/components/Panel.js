@@ -5,7 +5,7 @@ import {highlight, languages} from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-dark.css'
 import {connect} from 'react-redux';
-import {closeQueryPanel, setQuery, setReturnData, setReturnDataAndInfo} from "../actions/actions";
+import {closeQueryPanel, setQuery, } from "../actions/actions";
 
 class Panel extends Component {
 
@@ -47,7 +47,7 @@ class Panel extends Component {
 
 
     render() {
-        let compClass = "Panel";
+        let compClass = "Panel";//TODO should I remove this?
         if (this.props.showPanel) {
             compClass = "Panel visible"
         }
@@ -83,10 +83,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-    updateReturnDataAndInfo: (jsonData, jsonKeys, statusText, index) => setReturnDataAndInfo(jsonData, jsonKeys, statusText, index),
-    updateReturnData: (jsonData, index) => setReturnData(jsonData, index),
     closeQueryPanel,
     setQuery: (query, index) => setQuery(query,index),
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Panel);

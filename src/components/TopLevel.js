@@ -3,7 +3,7 @@ import axios from 'axios/index';
 import './TopLevel.css';
 import {Endpoint, Mode, Panel, Split, ActionButton} from './index.js';
 import {connect} from 'react-redux';
-import {setReturnDataAndInfo, setReturnData, closeQueryPanel} from "../actions/actions";
+import {setReturnDataKeys, setReturnData, setReturnDataStatus, closeQueryPanel} from "../actions/actions";
 
 class TopLevel extends Component {
     constructor(props) {
@@ -29,20 +29,11 @@ class TopLevel extends Component {
                     if (response.data !== undefined) {
                         this.findAllKeys('', selectKeys, response.data);
                     }
-
-                    this.props.updateReturnDataAndInfo(
-                        response,
-                        selectKeys,
-                        'Response Received',
-                        1
-                    );
+                    this.props.updateReturnData(response,1);
+                    this.props.updateReturnDataKeys(selectKeys);
+                    this.props.updateReturnDataStatus(' Response Received');
                 }).catch(error => {
-                this.props.updateReturnDataAndInfo(
-                    [],
-                    [],
-                    'Error occurred => ' + error.message,
-                    1
-                );
+                this.props.updateReturnDataStatus(' Error occurred => ' + error.message);
             });
             if (this.props.split) {
                 axios.post(this.props.endpoint, JSON.parse(this.props.query2))
@@ -53,6 +44,7 @@ class TopLevel extends Component {
                         );
                     });
             }
+            this.props.updateReturnDataStatus(' Fetching');
         }
     }
 
@@ -129,7 +121,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-    updateReturnDataAndInfo: (jsonData, jsonKeys, statusText, index) => setReturnDataAndInfo(jsonData, jsonKeys, statusText, index),
+    updateReturnDataKeys: (jsonKeys) => setReturnDataKeys(jsonKeys),
+    updateReturnDataStatus: (statusText) => setReturnDataStatus(statusText),
     updateReturnData: (jsonData, index) => setReturnData(jsonData, index),
     closeQueryPanel,
 }

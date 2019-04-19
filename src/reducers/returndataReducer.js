@@ -1,6 +1,6 @@
-import {SET_RECEIVED_DATA} from '../actions/actionTypes';
+import {SET_RECEIVED_DATA, SET_RECEIVED_DATA_KEYS, SET_RECEIVED_DATA_STATUS} from '../actions/actionTypes';
 
-const initialState =  {
+const initialState = {
     returnData1: [],
     returnData2: [],
     returnKeys: [],
@@ -13,20 +13,28 @@ const initialState =  {
 //It shouldn't perform any side effects like API calls or router transitions.
 //These should happen before an action is dispatched.
 export default function returnData(state = initialState, action) {
-    if (action.type === SET_RECEIVED_DATA) {
-        if(action.index === 1) {
+    switch (action.type) {
+        case SET_RECEIVED_DATA:
+            if (action.index === 1) {
+                return Object.assign({}, state, {
+                    returnData1: action.returnData,
+                });
+            } else if (action.index === 2) {
+                return Object.assign({}, state, {
+                    returnData2: action.returnData,
+                });
+            }
+            return state;
+        case SET_RECEIVED_DATA_KEYS:
             return Object.assign({}, state, {
-                returnData1: action.returnData,
                 returnKeys: action.returnKeys,
+            });
+        case SET_RECEIVED_DATA_STATUS:
+            return Object.assign({}, state, {
                 statusText: action.statusText
             });
-        } else if (action.index === 2){
-            return Object.assign({}, state, {
-                returnData2: action.returnData,
-            });
-        }
-        return state;
-    } else {
-        return state;
+        default:
+            return state;
     }
 }
+

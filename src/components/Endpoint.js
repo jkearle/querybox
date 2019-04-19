@@ -13,7 +13,7 @@ class Endpoint extends Component {
                         <label htmlFor="endpoint">Search Endpoint</label>
                     </div>
                     <div className={'statusLabelDiv'}>
-                        <label>{'Status:' + this.props.statusText}</label>
+                        <label>{'Status:  ' + this.props.statusText}</label>
                     </div>
                 </div>
                 <input

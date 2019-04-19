@@ -6,13 +6,17 @@ Call the function to creat an action. An action is a plain
 JavaScript object.
  */
 
-export function setReturnDataAndInfo(json, returnKeys, statusText, index) {
+export function setReturnDataStatus(statusText) {
     return {
-        type: types.SET_RECEIVED_DATA,
-        returnData: json,
-        statusText: statusText,
+        type: types.SET_RECEIVED_DATA_STATUS,
+        statusText: statusText
+    };
+}
+
+export function setReturnDataKeys(returnKeys) {
+    return {
+        type: types.SET_RECEIVED_DATA_KEYS,
         returnKeys: returnKeys,
-        index: index
     };
 }
 
