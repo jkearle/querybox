@@ -13,15 +13,16 @@ class TopLevel extends Component {
     }
 
     executeRequests() {
-        if (this.props.endpoint) {
+        const {endpoint, query1, query2, split} = this.props;
+        if (endpoint) {
             let post = {};
-            if (this.props.query1) {
+            if (query1) {
                 try {
-                    post = JSON.parse(this.props.query1);
+                    post = JSON.parse(query1);
                 } catch (e) {
                 }
             }
-            axios.post(this.props.endpoint, post)
+            axios.post(endpoint, post)
                 .then(response => {
                     console.log("Axios Response => " + response.toString());
 
@@ -35,8 +36,8 @@ class TopLevel extends Component {
                 }).catch(error => {
                 this.props.updateReturnDataStatus(' Error occurred => ' + error.message);
             });
-            if (this.props.split) {
-                axios.post(this.props.endpoint, JSON.parse(this.props.query2))
+            if (split && (query2.trim() !== '')) {
+                axios.post(endpoint, JSON.parse(query2))
                     .then(response => {
                         this.props.updateReturnData(
                             response,
