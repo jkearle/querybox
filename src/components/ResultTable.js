@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
 import {NO_DIFF, SAME, DIFFERENT} from './ResultRow'
+import PropTypes from "prop-types";
 
 
-class ResultTable extends Component {
+export default class ResultTable extends Component {
 
     getCompareTable() {
         if (this.areAllNeededPropsValid()) {
@@ -44,6 +45,7 @@ class ResultTable extends Component {
                 }
                 resultTableRowElements.push(<ResultRow
                     key={'Result Table Row ' + i}
+                    rowIndex={i}
                     cellsText={singleRowTextValue}
                     cellsDiffState={singleRowCompareValue}/>);
             }
@@ -212,4 +214,8 @@ class ResultTable extends Component {
     }
 }
 
-export default ResultTable;
+ResultTable.propTypes = {
+    compareKeyChains: PropTypes.array.isRequired,
+    returnData: PropTypes.object.isRequired,
+    compareReturnData: PropTypes.object,
+};

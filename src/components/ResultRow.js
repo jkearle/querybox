@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from "prop-types";
 
 export const NO_DIFF = 0,
     SAME = 1,
@@ -9,9 +10,9 @@ const NO_DIFF_COLOR = "white",
     DIFFERENT_COLOR = "#ff4500";
 
 
-class ResultRow extends Component {
+export default class ResultRow extends Component {
     render() {
-        const {cellsText, cellsDiffState} = this.props;
+        const {cellsText, cellsDiffState, rowIndex} = this.props;
 
         let resultsCells = [];
         let color = NO_DIFF_COLOR;
@@ -29,15 +30,18 @@ class ResultRow extends Component {
                 let cellStyle = {
                     backgroundColor: color
                 };
-
-                resultsCells.push(<td style={cellStyle} key={'Result Row Cell' + this.props.index + ',' + i}>{cellsText[i]}</td>)
+                resultsCells.push(<td style={cellStyle} key={'Result Row Cell' + rowIndex + ',' + i}>{cellsText[i]}</td>)
             }
         }
 
         return (
-            <tr key={'Result Row ' + this.props.index} >{resultsCells}</tr>
+            <tr key={'Result Row ' + rowIndex} >{resultsCells}</tr>
         );
     }
 }
 
-export default ResultRow;
+ResultRow.propTypes = {
+    cellsText: PropTypes.array.isRequired,
+    cellsDiffState: PropTypes.array.isRequired,
+    rowIndex: PropTypes.number.isRequired
+};

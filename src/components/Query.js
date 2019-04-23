@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './Query.css'
+import './Query.css';
+import PropTypes from "prop-types";
 
-class Query extends Component {
+export default class Query extends Component {
     render() {
         return (
             <div className="Query Component">
@@ -16,4 +17,7 @@ class Query extends Component {
     }
 }
 
-export default Query;
+Query.propTypes = {
+    query: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+};
