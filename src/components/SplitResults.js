@@ -101,7 +101,7 @@ class SplitResults extends Component {
                         {this.getJsonTree(returnData1)}
                         {this.getResultsTable(returnData1, returnData2, true)}
                     </div>
-                    <div className={compareItem}>
+                    <div className='Split Selectors'>
                         {this.getTabButtons()}
                         {this.getKeySelect()}
                     </div>
