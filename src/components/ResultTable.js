@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
-import {NO_DIFF, SAME, DIFFERENT} from './ResultRow'
+import {NO_DIFF, ADD, REMOVE} from './ResultRow'
 import {diffArrays} from 'diff';
 
 
@@ -27,40 +27,12 @@ class ResultTable extends Component {
                     this.getResultsSingle(singleCompareKeyChain, textArrayOriginal, textArrayComparison, compareArray);
                 }
 
-                let diffRtrn;
-                if (this.props.original) {
-                    diffRtrn = diffArrays(textArrayOriginal, textArrayComparison);
-                } else {
-                    diffRtrn = diffArrays(textArrayComparison, textArrayOriginal);
-                }
-                let diffRowIndex = 0;
-                if (diffRtrn.length > 0) {
-                    diffRtrn.forEach((diff) => {
-                        diff.value.forEach((diffSingleRow) => {
-                            if (diff.removed !== undefined && diff.removed) {
-                                if (this.props.original) {
-                                    compareArray[diffRowIndex] = DIFFERENT;
-                                    diffRowIndex++;
-                                }
-                            } else if (diff.added !== undefined && diff.added) {
-                                if(!this.props.original) {
-                                    compareArray[diffRowIndex] = SAME;
-                                    diffRowIndex++;
-                                }
-                            } else {
-                                compareArray[diffRowIndex] = NO_DIFF;
-                                diffRowIndex++;
-                            }
-                        });
-                    });
-                }
+                this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
+
+                console.log({textArrayOriginal, textArrayComparison, compareArray});
 
                 arrayOfSingleColumnAllRowsTextArrays.push(textArrayOriginal);
                 arrayOfSingleColumnAllRowsComparisonsArrays.push(compareArray);
-
-
-                console.log({diffRtrn, textArrayOriginal, textArrayComparison, compareArray});
-                //debugger;
 
                 if (textArrayOriginal.length > numberOfRows) {
                     numberOfRows = textArrayOriginal.length;
@@ -91,6 +63,47 @@ class ResultTable extends Component {
         }
     }
 
+    /**
+     * Method that uses the diff library to retrieve the differences between the two text arrays.
+     * When calculating the changes to the original value, we only mark values that are the same, or removed.
+     * When calculating the changes to the compare values, we mark values that are the same, or added.
+     * @param textArrayOriginal the original text array
+     * @param textArrayComparison - the new text array to compare to
+     * @param compareArray - array that will be populated with the comparison results
+     */
+    getDiffValues(textArrayOriginal, textArrayComparison, compareArray) {
+        let diffReturn;
+        const {originalTable} = this.props;
+
+        if (originalTable) {
+            diffReturn = diffArrays(textArrayOriginal, textArrayComparison);
+        } else {
+            diffReturn = diffArrays(textArrayComparison, textArrayOriginal);
+        }
+
+        let diffRowIndex = 0;
+        if (diffReturn.length > 0) {
+            diffReturn.forEach((diff) => {
+                diff.value.forEach((diffSingleRow) => {
+                    if (diff.removed !== undefined && diff.removed) {
+                        if (originalTable !== undefined && originalTable) { // in the original table, we only show removes, or sames
+                            compareArray[diffRowIndex] = REMOVE;
+                            diffRowIndex++;
+                        }
+                    } else if (diff.added !== undefined && diff.added) {
+                        if (originalTable !== undefined &&  !originalTable) { //if this is the compare table, then we show adds and sames
+                            compareArray[diffRowIndex] = ADD;
+                            diffRowIndex++;
+                        }
+                    } else {
+                        compareArray[diffRowIndex] = NO_DIFF;
+                        diffRowIndex++;
+                    }
+                });
+            });
+        }
+    }
+
     areAllNeededPropsValid() {
         const {returnData} = this.props;
         return this.props.compareKeyChains !== undefined &&
@@ -107,17 +120,14 @@ class ResultTable extends Component {
      * @param singleCompareKeyChain - Period separated key values for the JSON object.
      * @param textValueArray - This method will push the text values found at the end of the key path,
      * for all each of the array paths.
-     * @param diffStateArray - This method will push the compare value found at the end of the key path
-     * for all each of the array paths.
      */
-    getResultsArray(singleCompareKeyChain, textValueArray, textCompareArray, diffStateArray) {
+    getResultsArray(singleCompareKeyChain, textValueArray, textCompareArray) {
         const {returnData, compareReturnData} = this.props;
 
         let keys = singleCompareKeyChain.split('.');
         let arrayObject = undefined;
         let compareArrayObject = undefined;
         let arrayIndex = 0;
-        let checkDiff = true;
 
         for (let i = 0; i < keys.length; i++) {
             let s = keys[i];
@@ -153,7 +163,6 @@ class ResultTable extends Component {
             let finalObject = arrayObject[i];
 
             let compareFinalObject = undefined;
-            checkDiff = true;
             if (compareArrayObject !== undefined) {
                 compareFinalObject = compareArrayObject[i];
             }
@@ -166,16 +175,16 @@ class ResultTable extends Component {
                 }
             }
 
-            textCompareArray.push(compareFinalObject);
-            if (finalObject === compareFinalObject) {
-                diffStateArray.push(SAME);
-            } else if (checkDiff) {
-                diffStateArray.push(DIFFERENT);
-            } else {
-                diffStateArray.push(NO_DIFF);
+            if(compareFinalObject === undefined || compareFinalObject === null){
+                compareFinalObject = '';
             }
 
-            textValueArray.push(finalObject);
+            if(finalObject === undefined || finalObject === null){
+                finalObject = '';
+            }
+
+            textCompareArray.push(compareFinalObject.toString());
+            textValueArray.push(finalObject.toString());
         }
     }
 
@@ -187,15 +196,13 @@ class ResultTable extends Component {
      * This method is used if the key path does not have any arrays along the path.
      * @param singleCompareKeyChain - Period separated key values for the JSON object.
      * @param textValueArray - This method will push the text value found at the end of the key path
-     * @param diffStateArray - This method will push the compare value found at the end of the key path
      */
-    getResultsSingle(singleCompareKeyChain, textValueArray, textCompareArray, diffStateArray) {
+    getResultsSingle(singleCompareKeyChain, textValueArray, textCompareArray) {
         const {returnData, compareReturnData} = this.props;
 
         let keys = singleCompareKeyChain.split('.');
         let currentObject = undefined;
         let compareObject = undefined;
-        let checkDiff = true;
 
         keys.forEach((s) => {
             if (currentObject === undefined) {
@@ -215,28 +222,15 @@ class ResultTable extends Component {
                 if (compareObject === undefined) {
                     if (s in compareReturnData) {
                         compareObject = compareReturnData[s];
-                    } else {
-                        checkDiff = false;
                     }
                 } else {
                     if (s in compareObject) {
                         compareObject = compareObject[s];
                         textCompareArray.push(compareObject);
-                    } else {
-                        checkDiff = false;
                     }
                 }
             });
         }
-
-        if (currentObject === compareObject) {
-            diffStateArray.push(SAME);
-        } else if (checkDiff) {
-            diffStateArray.push(DIFFERENT);
-        } else {
-            diffStateArray.push(NO_DIFF);
-        }
-
         textValueArray.push(currentObject);
     }
 

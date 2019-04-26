@@ -53,13 +53,13 @@ class SplitResults extends Component {
         }
     }
 
-    getResultsTable(returnData, compareReturnData, original) {
+    getResultsTable(returnData, compareReturnData, originalTable) {
         if (returnData.data !== undefined && this.state.showCompare) {
             return <ResultTable
                 returnData={returnData.data}
                 compareReturnData={compareReturnData.data}
                 compareKeyChains={this.state.compareKeyChains}
-                original={original}
+                originalTable={originalTable}
             />
         }
     }
