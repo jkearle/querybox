@@ -53,12 +53,13 @@ class SplitResults extends Component {
         }
     }
 
-    getResultsTable(returnData, compareReturnData) {
+    getResultsTable(returnData, compareReturnData, original) {
         if (returnData.data !== undefined && this.state.showCompare) {
             return <ResultTable
                 returnData={returnData.data}
                 compareReturnData={compareReturnData.data}
                 compareKeyChains={this.state.compareKeyChains}
+                original={original}
             />
         }
     }
@@ -98,7 +99,7 @@ class SplitResults extends Component {
                     <div className="SplitItemResult">
                         {this.getStats(returnData1)}
                         {this.getJsonTree(returnData1)}
-                        {this.getResultsTable(returnData1, returnData2)}
+                        {this.getResultsTable(returnData1, returnData2, true)}
                     </div>
                     <div className={compareItem}>
                         {this.getTabButtons()}
@@ -107,7 +108,7 @@ class SplitResults extends Component {
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
                         {this.getJsonTree(returnData2)}
-                        {this.getResultsTable(returnData2, returnData1)}
+                        {this.getResultsTable(returnData2, returnData1, false)}
                     </div>
                 </div>
             </div>

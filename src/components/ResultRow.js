@@ -24,6 +24,8 @@ class ResultRow extends Component {
                     color = DIFFERENT_COLOR;
                 } else if (cellDiffState === SAME) {
                     color = SAME_COLOR;
+                } else {
+                    color = NO_DIFF_COLOR;
                 }
 
                 let cellStyle = {

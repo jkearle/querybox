@@ -1,8 +1,30 @@
 import {SET_QUERY} from '../actions/actionTypes';
 
 const initialState =  {
-    query1: '',
-    query2: ''
+    query1: "{\n" +
+        "    \"size\": 100,\n" +
+        "    \"query\": {\n" +
+        "        \"filtered\": {\n" +
+        "            \"filter\": {\n" +
+        "                \"missing\": {\n" +
+        "                    \"field\": \"editorial_body\"\n" +
+        "                }\n" +
+        "            }\n" +
+        "        }\n" +
+        "    }\n" +
+        "}",
+    query2: "{\n" +
+        "    \"size\": 100,\n" +
+        "    \"query\": {\n" +
+        "        \"filtered\": {\n" +
+        "            \"filter\": {\n" +
+        "                \"missing\": {\n" +
+        "                    \"field\": \"editorial_body\"\n" +
+        "                }\n" +
+        "            }\n" +
+        "        }\n" +
+        "    }\n" +
+        "}",
 };
 
 //The reducer is a pure function that takes the previous state and an action, and returns the next state.
