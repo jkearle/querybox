@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
 import {NO_DIFF, ADD, REMOVE} from './ResultRow'
-import {diffArrays} from 'diff';
+import {diffArrays} from 'diff';//https://github.com/kpdecker/jsdiff or https://www.npmjs.com/package/diff
 
 
 class ResultTable extends Component {
