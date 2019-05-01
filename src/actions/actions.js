@@ -57,6 +57,20 @@ export function showQueryPanel(sourceQueryIndex) {
     };
 }
 
+export function showJson(showJson) {
+    return {
+        type: types.SET_SHOW_JSON,
+        showJson: showJson
+    };
+}
+
+export function setSelectedKey(selectedKey) {
+    return {
+        type: types.SET_SELECTED_KEY,
+        selectedKey: selectedKey
+    };
+}
+
 
 /*
 function url() {

@@ -14,28 +14,26 @@ class ResultTable extends Component {
             let arrayOfSingleColumnAllRowsTextArrays = [];
             let arrayOfSingleColumnAllRowsComparisonsArrays = [];
             let numberOfRows = 0;
-            this.props.compareKeyChains.forEach((singleCompareKeyChain) => {
-                let keys = singleCompareKeyChain.split('.');
-                let headerText = keys[keys.length - 1];
-                colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-                let textArrayOriginal = [];
-                let textArrayComparison = [];
-                let compareArray = [];
-                if (singleCompareKeyChain.includes('0')) {
-                    this.getResultsArray(singleCompareKeyChain, textArrayOriginal, textArrayComparison, compareArray);
-                } else {
-                    this.getResultsSingle(singleCompareKeyChain, textArrayOriginal, textArrayComparison, compareArray);
-                }
+            let keys = this.props.compareKeyChains.split('.');
+            let headerText = keys[keys.length - 1];
+            colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+            let textArrayOriginal = [];
+            let textArrayComparison = [];
+            let compareArray = [];
+            if (this.props.compareKeyChains.includes('0')) {
+                this.getResultsArray(this.props.compareKeyChains, textArrayOriginal, textArrayComparison, compareArray);
+            } else {
+                this.getResultsSingle(this.props.compareKeyChains, textArrayOriginal, textArrayComparison, compareArray);
+            }
 
-                this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
-                
-                arrayOfSingleColumnAllRowsTextArrays.push(textArrayOriginal);
-                arrayOfSingleColumnAllRowsComparisonsArrays.push(compareArray);
+            this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
 
-                if (textArrayOriginal.length > numberOfRows) {
-                    numberOfRows = textArrayOriginal.length;
-                }
-            });
+            arrayOfSingleColumnAllRowsTextArrays.push(textArrayOriginal);
+            arrayOfSingleColumnAllRowsComparisonsArrays.push(compareArray);
+
+            if (textArrayOriginal.length > numberOfRows) {
+                numberOfRows = textArrayOriginal.length;
+            }
 
             resultTableRowElements.push(<tr key={'header row'}>{colHeadersRowElement}</tr>);
 
@@ -89,7 +87,7 @@ class ResultTable extends Component {
                             diffRowIndex++;
                         }
                     } else if (diff.added !== undefined && diff.added) {
-                        if (originalTable !== undefined &&  !originalTable) { //if this is the compare table, then we show adds and sames
+                        if (originalTable !== undefined && !originalTable) { //if this is the compare table, then we show adds and sames
                             compareArray[diffRowIndex] = ADD;
                             diffRowIndex++;
                         }
@@ -105,7 +103,6 @@ class ResultTable extends Component {
     areAllNeededPropsValid() {
         const {returnData} = this.props;
         return this.props.compareKeyChains !== undefined &&
-            this.props.compareKeyChains.length > 0 &&
             returnData !== undefined;
     }
 
@@ -173,11 +170,11 @@ class ResultTable extends Component {
                 }
             }
 
-            if(compareFinalObject === undefined || compareFinalObject === null){
+            if (compareFinalObject === undefined || compareFinalObject === null) {
                 compareFinalObject = '';
             }
 
-            if(finalObject === undefined || finalObject === null){
+            if (finalObject === undefined || finalObject === null) {
                 finalObject = '';
             }
 

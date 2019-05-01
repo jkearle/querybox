@@ -1,9 +1,15 @@
-import {SET_PANEL_STATE_OPEN, SET_PANEL_STATE_CLOSED,SET_SPLIT_MODE} from "../actions/actionTypes";
+import {SET_PANEL_STATE_OPEN,
+    SET_PANEL_STATE_CLOSED,
+    SET_SHOW_JSON,
+    SET_SELECTED_KEY,
+    SET_SPLIT_MODE} from "../actions/actionTypes";
 
 const initialState = {
     split: false,
     showPanel: false,
-    queryIndex: 1
+    queryIndex: 1,
+    showJson: false,
+    selectedKey: ''
 };
 
 //The reducer is a pure function that takes the previous state and an action, and returns the next state.
@@ -19,10 +25,17 @@ export default function visualState(state = initialState, action) {
             return Object.assign({}, state, {
                 showPanel: false,
             });
-
         case SET_SPLIT_MODE:
             return Object.assign({}, state, {
                 split: action.split
+            });
+        case SET_SHOW_JSON:
+            return Object.assign({}, state, {
+                showJson: action.showJson
+            });
+        case SET_SELECTED_KEY:
+            return Object.assign({}, state, {
+                selectedKey: action.selectedKey
             });
          default:
           return state;

@@ -13,6 +13,7 @@ import MenuIcon from "./MenuIcon";
 import Split from "./Split";
 import ActionButton from "./ActionButton";
 import TopLevel from "./TopLevel";
+import UserOptions from "./UserOptions";
 
 
 export {Endpoint};
@@ -30,3 +31,4 @@ export {ResultRow};
 export {ResultTable};
 export {KeySelect};
 export {TopLevel};
+export {UserOptions};

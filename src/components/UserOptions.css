@@ -1,0 +1,22 @@
+.split_display_return_select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.split_display_return_select button {
+    font-size: 1.2em;
+    background-color: #cccccc;
+    border-color: #000000;
+    width: 100px;
+}
+
+.split_display_return_select button.selected {
+    box-shadow: inset 1px 5px 5px #777777;
+    background-color: #aaaaaa;
+}
+
+.FilteredMultiSelect__select {
+    display: block;
+}

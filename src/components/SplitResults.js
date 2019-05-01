@@ -1,77 +1,24 @@
 import React, {Component} from 'react';
 import './SplitResults.css';
 import Inspector from 'react-inspector'; //Found at https://www.npmjs.com/package/react-inspector
-import {Stats, ResultTable, KeySelect} from "./index";
+import {Stats, ResultTable} from "./index";
 import {connect} from 'react-redux';
 
 
 class SplitResults extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showCompare: true,
-            showJson: false,
-            compareKeyChains: []
-        };
-    }
-
-    handleSelectionChange = (selectedKeys) => {
-        this.setState({compareKeyChains: selectedKeys});
-    };
-
-
-    showReturnInJson = () => {
-        this.setState({showCompare: false, showJson: true});
-    };
-
-    showReturnInCompare = () => {
-        this.setState({showCompare: true, showJson: false});
-    };
-
-    getTabButtons() {
-        const {returnData1} = this.props;
-
-        let jsonButtonName = '';
-        let compareButtonName = '';
-        if (this.state.showCompare) {
-            compareButtonName = 'selected';
-        } else {
-            jsonButtonName = 'selected';
-        }
-
-        if (returnData1.data !== undefined) {
-            return <div className="split_display_return_select">
-                <button className={compareButtonName} onClick={this.showReturnInCompare}>Compare</button>
-                <button className={jsonButtonName} onClick={this.showReturnInJson}>JSON</button>
-            </div>
-        }
-    }
-
     getJsonTree(results) {
-        if (results.data !== undefined && this.state.showJson) {
+        if (results.data !== undefined && this.props.showJson) {
             return <Inspector data={results.data}/>
         }
     }
 
     getResultsTable(returnData, compareReturnData, originalTable) {
-        if (returnData.data !== undefined && this.state.showCompare) {
+        if (returnData.data !== undefined && !this.props.showJson) {
             return <ResultTable
                 returnData={returnData.data}
                 compareReturnData={compareReturnData.data}
-                compareKeyChains={this.state.compareKeyChains}
+                compareKeyChains={this.props.compareKeyChains}
                 originalTable={originalTable}
-            />
-        }
-    }
-
-    getKeySelect() {
-        const {returnData1, keys} = this.props;
-        if (returnData1.data !== undefined) {
-            return <KeySelect
-                returnData={returnData1}
-                keys={keys}
-                compareKeyChains={this.state.compareKeyChains}
-                selectedKeysUpdated={(selectedKeys) => this.handleSelectionChange(selectedKeys)}
             />
         }
     }
@@ -101,10 +48,6 @@ class SplitResults extends Component {
                         {this.getJsonTree(returnData1)}
                         {this.getResultsTable(returnData1, returnData2, true)}
                     </div>
-                    <div className='Split Selectors'>
-                        {this.getTabButtons()}
-                        {this.getKeySelect()}
-                    </div>
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
                         {this.getJsonTree(returnData2)}
@@ -120,8 +63,9 @@ const mapStateToProps = state => {
     return {
         returnData1: state.returnData.returnData1,
         returnData2: state.returnData.returnData2,
-        keys: state.returnData.returnKeys,
         split: state.visualState.split,
+        compareKeyChains: state.visualState.selectedKey,
+        showJson: state.visualState.showJson,
     };
 };
 

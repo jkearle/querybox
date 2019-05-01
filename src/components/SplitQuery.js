@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './SplitQuery.css';
-import {Query}  from "../components";
+import {Query, UserOptions} from "../components";
 import {connect} from 'react-redux';
 import {showQueryPanel} from "../actions/actions";
 
 class SplitQuery extends Component {
     render() {
-           let secondItem = "SplitItem";
+        let secondItem = "SplitItem";
         if (!this.props.split) {
             secondItem += " SplitHidden";
         }
@@ -17,6 +17,9 @@ class SplitQuery extends Component {
                     <div className="SplitItem">
                         <Query query={this.props.query1}
                                onClick={() => this.props.showQueryPanel(1)}/>
+                    </div>
+                    <div className={'User Options'}>
+                        <UserOptions/>
                     </div>
                     <div className={secondItem}>
                         <Query query={this.props.query2}
@@ -37,8 +40,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-     showQueryPanel: (showQueryIndex) => showQueryPanel(showQueryIndex)
-}
+    showQueryPanel: (showQueryIndex) => showQueryPanel(showQueryIndex)
+};
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(SplitQuery);
