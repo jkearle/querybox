@@ -11,51 +11,73 @@ class ResultTable extends Component {
         if (this.areAllNeededPropsValid()) {
             let resultTableRowElements = [];//this should contain the final array of ResultsRow elements
             let colHeadersRowElement = [];
-            let arrayOfSingleColumnAllRowsTextArrays = [];
-            let arrayOfSingleColumnAllRowsComparisonsArrays = [];
-            let numberOfRows = 0;
             let keys = this.props.compareKeyChains.split('.');
             let headerText = keys[keys.length - 1];
             colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
             let textArrayOriginal = [];
             let textArrayComparison = [];
             let compareArray = [];
-            if (this.props.compareKeyChains.includes('0')) {
-                this.getResultsArray(this.props.compareKeyChains, textArrayOriginal, textArrayComparison, compareArray);
-            } else {
-                this.getResultsSingle(this.props.compareKeyChains, textArrayOriginal, textArrayComparison, compareArray);
-            }
 
+            //convert JSON to Array for both
+            this.getTextArraysFromJson(textArrayOriginal, textArrayComparison);
+
+            //create the diff tokens between the two
             this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
-
-            arrayOfSingleColumnAllRowsTextArrays.push(textArrayOriginal);
-            arrayOfSingleColumnAllRowsComparisonsArrays.push(compareArray);
-
-            if (textArrayOriginal.length > numberOfRows) {
-                numberOfRows = textArrayOriginal.length;
-            }
 
             resultTableRowElements.push(<tr key={'header row'}>{colHeadersRowElement}</tr>);
 
-            for (let i = 0; i < numberOfRows; i++) {
+            console.log(compareArray);
+
+
+            //Convert the Text Array and the comparison info to rows
+            for (let i = 0; i < compareArray.length; i++) {
+
+                //for each no change - add current (first++, and second++) index++, and value for two cells - in white
+                //for each removal, add current (first++, and second) index++, add value for first cell - cells in Red
+                //for each addition, add current (first, and second++) index, value in second cell - cells in green
                 let singleRowTextValue = [];
                 let singleRowCompareValue = [];
-                for (let j = 0; j < arrayOfSingleColumnAllRowsTextArrays.length; j++) {
-                    singleRowTextValue.push(arrayOfSingleColumnAllRowsTextArrays[j][i]);
-                    singleRowCompareValue.push(arrayOfSingleColumnAllRowsComparisonsArrays[j][i]);
+                let originalTextIndex = 0;
+                let compareTextIndex = 0;
+
+                if (compareArray[i] === REMOVE) {
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
+                    singleRowTextValue.push('');
+                    singleRowCompareValue.push(REMOVE);
+                    singleRowCompareValue.push(NO_DIFF);
+                } else if (ADD) {
+                    singleRowTextValue.push('');
+                    singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
+                    singleRowCompareValue.push(NO_DIFF);
+                    singleRowCompareValue.push(ADD);
+                } else {
+                    //should be in both
+                    console.log('No diff row');
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
+                    singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
+                    singleRowCompareValue.push(NO_DIFF);
+                    singleRowCompareValue.push(NO_DIFF);
                 }
+
                 resultTableRowElements.push(<ResultRow
                     key={'Result Table Row ' + i}
                     cellsText={singleRowTextValue}
                     cellsDiffState={singleRowCompareValue}/>);
             }
 
-
             return <table className="results">
                 <tbody>
                 {resultTableRowElements}
                 </tbody>
             </table>
+        }
+    }
+
+    getTextArraysFromJson(textArrayOriginal, textArrayComparison) {
+        if (this.props.compareKeyChains.includes('0')) {
+            this.getTextArrayFromJsonArray(this.props.compareKeyChains, textArrayOriginal, textArrayComparison);
+        } else {
+            this.getTextArrayFromJsonSingle(this.props.compareKeyChains, textArrayOriginal, textArrayComparison);
         }
     }
 
@@ -69,31 +91,23 @@ class ResultTable extends Component {
      */
     getDiffValues(textArrayOriginal, textArrayComparison, compareArray) {
         let diffReturn;
-        const {originalTable} = this.props;
 
-        if (originalTable) {
-            diffReturn = diffArrays(textArrayOriginal, textArrayComparison);
-        } else {
-            diffReturn = diffArrays(textArrayComparison, textArrayOriginal);
-        }
+        let textArrayOriginalOriginal = [...textArrayOriginal];
+        let textArrayComparisonOriginal = [...textArrayComparison];
 
-        let diffRowIndex = 0;
+        diffReturn = diffArrays(textArrayOriginalOriginal, textArrayComparisonOriginal);
+        console.log(diffReturn);
+
+        compareArray.length = 0;//This is the way to clear an array
         if (diffReturn.length > 0) {
             diffReturn.forEach((diff) => {
                 diff.value.forEach((diffSingleRow) => {
                     if (diff.removed !== undefined && diff.removed) {
-                        if (originalTable !== undefined && originalTable) { // in the original table, we only show removes, or sames
-                            compareArray[diffRowIndex] = REMOVE;
-                            diffRowIndex++;
-                        }
+                        compareArray.push(REMOVE);
                     } else if (diff.added !== undefined && diff.added) {
-                        if (originalTable !== undefined && !originalTable) { //if this is the compare table, then we show adds and sames
-                            compareArray[diffRowIndex] = ADD;
-                            diffRowIndex++;
-                        }
+                        compareArray.push(ADD);
                     } else {
-                        compareArray[diffRowIndex] = NO_DIFF;
-                        diffRowIndex++;
+                        compareArray.push(NO_DIFF);
                     }
                 });
             });
@@ -113,10 +127,10 @@ class ResultTable extends Component {
      * when the key path is not valid in the compare data) is placed into the diffStateArray.
      * This method is used if the key path contains an arrays along the path.
      * @param singleCompareKeyChain - Period separated key values for the JSON object.
-     * @param textValueArray - This method will push the text values found at the end of the key path,
-     * for all each of the array paths.
+     * @param textValueArray - This method will push the text value found at the end of the key path for the source JSON
+     * @param textCompareArray - This method will push the text value found at the end of the key path for the comparison JSON
      */
-    getResultsArray(singleCompareKeyChain, textValueArray, textCompareArray) {
+    getTextArrayFromJsonArray(singleCompareKeyChain, textValueArray, textCompareArray) {
         const {returnData, compareReturnData} = this.props;
 
         let keys = singleCompareKeyChain.split('.');
@@ -190,9 +204,10 @@ class ResultTable extends Component {
      * when the key path is not valid in the compare data) is placed into the diffStateArray.
      * This method is used if the key path does not have any arrays along the path.
      * @param singleCompareKeyChain - Period separated key values for the JSON object.
-     * @param textValueArray - This method will push the text value found at the end of the key path
+     * @param textValueArray - This method will push the text value found at the end of the key path for the source JSON
+     * @param textCompareArray - This method will push the text value found at the end of the key path for the comparison JSON
      */
-    getResultsSingle(singleCompareKeyChain, textValueArray, textCompareArray) {
+    getTextArrayFromJsonSingle(singleCompareKeyChain, textValueArray, textCompareArray) {
         const {returnData, compareReturnData} = this.props;
 
         let keys = singleCompareKeyChain.split('.');

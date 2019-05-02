@@ -51,7 +51,7 @@ class SplitResults extends Component {
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
                         {this.getJsonTree(returnData2)}
-                        {this.getResultsTable(returnData2, returnData1, false)}
+                        {/*this.getResultsTable(returnData2, returnData1, false)*/}
                     </div>
                 </div>
             </div>
