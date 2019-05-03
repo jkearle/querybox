@@ -42,17 +42,17 @@ class ResultTable extends Component {
 
                 if (compareArray[i] === REMOVE) {
                     singleRowTextValue.push(originalTextIndex + 1);
+                    singleRowTextValue.push('');
                     singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
                     singleRowTextValue.push('');
-                    singleRowTextValue.push('');
+                    singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(REMOVE);
                     singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
                 } else if (compareArray[i] === ADD) {
                     singleRowTextValue.push('');
-                    singleRowTextValue.push('');
                     singleRowTextValue.push(compareTextIndex + 1);
+                    singleRowTextValue.push('');
                     singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
                     singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(NO_DIFF);
@@ -61,8 +61,8 @@ class ResultTable extends Component {
                 } else {
                     //should be in both
                     singleRowTextValue.push(originalTextIndex + 1);
-                    singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
                     singleRowTextValue.push(compareTextIndex + 1);
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
                     singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
                     singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(NO_DIFF);
