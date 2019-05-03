@@ -30,6 +30,8 @@ class ResultTable extends Component {
 
 
             //Convert the Text Array and the comparison info to rows
+            let originalTextIndex = 0;
+            let compareTextIndex = 0;
             for (let i = 0; i < compareArray.length; i++) {
 
                 //for each no change - add current (first++, and second++) index++, and value for two cells - in white
@@ -37,24 +39,33 @@ class ResultTable extends Component {
                 //for each addition, add current (first, and second++) index, value in second cell - cells in green
                 let singleRowTextValue = [];
                 let singleRowCompareValue = [];
-                let originalTextIndex = 0;
-                let compareTextIndex = 0;
 
                 if (compareArray[i] === REMOVE) {
+                    singleRowTextValue.push(originalTextIndex + 1);
                     singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
                     singleRowTextValue.push('');
+                    singleRowTextValue.push('');
+                    singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(REMOVE);
                     singleRowCompareValue.push(NO_DIFF);
-                } else if (ADD) {
+                    singleRowCompareValue.push(NO_DIFF);
+                } else if (compareArray[i] === ADD) {
                     singleRowTextValue.push('');
+                    singleRowTextValue.push('');
+                    singleRowTextValue.push(compareTextIndex + 1);
                     singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
+                    singleRowCompareValue.push(NO_DIFF);
+                    singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(ADD);
                 } else {
                     //should be in both
-                    console.log('No diff row');
+                    singleRowTextValue.push(originalTextIndex + 1);
                     singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
+                    singleRowTextValue.push(compareTextIndex + 1);
                     singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
+                    singleRowCompareValue.push(NO_DIFF);
+                    singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(NO_DIFF);
                     singleRowCompareValue.push(NO_DIFF);
                 }
