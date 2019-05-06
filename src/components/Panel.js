@@ -4,49 +4,66 @@ import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-dark.css'
+import {connect} from 'react-redux';
+import {closeQueryPanel, setQuery, } from "../actions/actions";
 
 class Panel extends Component {
 
     constructor(props) {
         super(props);
 
+        let initialPanelText = '';
+            if(this.props.queryIndex === 1){
+                initialPanelText =  this.props.query1;
+            } else {
+                initialPanelText =  this.props.query2;
+            }
         this.state = {
-            message: ""
+            message: "",
+            panelText: initialPanelText
         };
     }
 
     format(json) {
         let formatted = json;
-        this.setState({message: ""});
+        let message = '';
 
         if (json !== "") {
             try {
                 let parsed = JSON.parse(json);
                 formatted = JSON.stringify(parsed, null, 2);
             } catch (e) {
-                this.setState({message: "This is invalid JSON"});
+                message =  "This is invalid JSON";
             }
         }
+        this.setState({message: message});
         return formatted;
     }
 
+    saveQueryAndClose(){
+        this.props.setQuery(this.state.panelText, this.props.queryIndex);
+        this.props.closeQueryPanel();
+    }
+
+
     render() {
-        let compClass = "Panel";
-        if (this.props.open) {
+        let compClass = "Panel";//TODO should I remove this?
+        if (this.props.showPanel) {
             compClass = "Panel visible"
         }
+
         return (
             <div className={compClass}>
                 <div className="panel_content">
                     <p className="error">{this.state.message}</p>
-                    <button onClick={this.props.save}>Save</button>
+                    <button onClick={() => this.saveQueryAndClose()}>Save</button>
                     <div className={'panel_editor'}>
                         <Editor
                             placeholder="Enter your JSON query…"
-                            value={this.props.query}
+                            value={this.state.panelText}
                             highlight={code => highlight(code, languages.json)}
                             padding={10}
-                            onValueChange={code => this.props.update(this.format(code))}
+                            onValueChange={code => this.setState({panelText: this.format(code)})}
                             className="container_editor"
                         />
                     </div>
@@ -56,4 +73,18 @@ class Panel extends Component {
     }
 }
 
-export default Panel;
+const mapStateToProps = state => {
+    return {
+        query1: state.query.query1,
+        query2: state.query.query2,
+        showPanel: state.visualState.showPanel,
+        queryIndex: state.visualState.queryIndex
+    };
+};
+
+const mapDispatchToProps = {
+    closeQueryPanel,
+    setQuery: (query, index) => setQuery(query,index),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Panel);
