@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import FilteredMultiSelect from 'react-filtered-multiselect';
 import './KeySelect.css';
+import PropTypes from "prop-types";
 
-class KeySelect extends Component {
+export default class KeySelect extends Component {
     handleSelectionChange = (selection) => {
         const {selectedKeysUpdated} = this.props;
         if(selectedKeysUpdated !== undefined) {
@@ -32,4 +33,8 @@ class KeySelect extends Component {
     }
 }
 
-export default KeySelect;
+
+KeySelect.propTypes = {
+    compareKeyChains: PropTypes.array.isRequired,
+    selectedKeysUpdated: PropTypes.func.isRequired,
+};

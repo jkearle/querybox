@@ -13,38 +13,45 @@ class TopLevel extends Component {
     }
 
     executeRequests() {
-        if (this.props.endpoint) {
-            let post = {};
-            if (this.props.query1) {
+        const {endpoint, query1, query2, split} = this.props;
+        if (endpoint) {
+            if (query1.trim() !== '') {
                 try {
-                    post = JSON.parse(this.props.query1);
+                    axios.post(endpoint, JSON.parse(query1))
+                        .then(response => {
+                            console.log("Axios Response => " + response.toString());
+
+                            let selectKeys = [];
+                            if (response.data !== undefined) {
+                                this.findAllKeys('', selectKeys, response.data);
+                            }
+                            this.props.updateReturnData(response, 1);
+                            this.props.updateReturnDataKeys(selectKeys);
+                            this.props.updateReturnDataStatus(' Response Received');
+                        }).catch(error => {
+                        this.props.updateReturnDataStatus(' Error occurred => ' + error.message);
+                    });
+                    this.props.updateReturnDataStatus(' Fetching');
                 } catch (e) {
+                    this.props.updateReturnDataStatus(' Exception on Query 1');
+                }
+            } else {
+                this.props.updateReturnDataStatus(' Query 1 Empty - no fetch');
+            }
+            if (split && (query2.trim() !== '')) {
+                try {
+                    axios.post(endpoint, JSON.parse(query2))
+                        .then(response => {
+                            this.props.updateReturnData(
+                                response,
+                                2
+                            );
+                        });
+                } catch (e) {
+                    this.props.updateReturnDataStatus(' Exception on Query 2');
                 }
             }
-            axios.post(this.props.endpoint, post)
-                .then(response => {
-                    console.log("Axios Response => " + response.toString());
 
-                    let selectKeys = [];
-                    if (response.data !== undefined) {
-                        this.findAllKeys('', selectKeys, response.data);
-                    }
-                    this.props.updateReturnData(response,1);
-                    this.props.updateReturnDataKeys(selectKeys);
-                    this.props.updateReturnDataStatus(' Response Received');
-                }).catch(error => {
-                this.props.updateReturnDataStatus(' Error occurred => ' + error.message);
-            });
-            if (this.props.split) {
-                axios.post(this.props.endpoint, JSON.parse(this.props.query2))
-                    .then(response => {
-                        this.props.updateReturnData(
-                            response,
-                            2
-                        );
-                    });
-            }
-            this.props.updateReturnDataStatus(' Fetching');
         }
     }
 
@@ -80,8 +87,8 @@ class TopLevel extends Component {
         }
     }
 
-    getPanel(){
-        if(this.props.showPanel){
+    getPanel() {
+        if (this.props.showPanel) {
             return <Panel/>;
         }
     }

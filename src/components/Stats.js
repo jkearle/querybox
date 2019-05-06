@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Stats.css';
 
-class Stats extends Component {
+export default class Stats extends Component {
     render() {
         const {took} = this.props;
 
@@ -22,5 +22,3 @@ class Stats extends Component {
         );
     }
 }
-
-export default Stats;

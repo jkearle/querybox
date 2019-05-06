@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './ActionButton.css';
+import PropTypes from 'prop-types';
 
-class ActionButton extends Component {
+export default class ActionButton extends Component {
     render() {
         return (
             <button className="ActionButton" onClick={this.props.onClick}>{this.props.text}</button>
@@ -9,4 +10,7 @@ class ActionButton extends Component {
     }
 }
 
-export default ActionButton;
+ActionButton.propTypes = {
+    text: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
+};

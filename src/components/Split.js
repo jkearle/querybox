@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import './Split.css';
 import {SplitQuery, SplitResults} from "../components";
 
-
-class Split extends Component {
+export default class Split extends Component {
     render() {
         return (
             <div className="Split">
@@ -13,5 +12,3 @@ class Split extends Component {
         );
     }
 }
-
-export default Split;
