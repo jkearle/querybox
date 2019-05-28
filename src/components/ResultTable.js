@@ -10,70 +10,110 @@ export default class ResultTable extends Component {
 
     getCompareTable() {
         if (this.areAllNeededPropsValid()) {
+
+            let arrayOfOriginalTextArrays = [];
+            let arrayOfComparisonTextArrays = [];
+            let arrayOfComparisonArrays = [];
+            let keys = this.props.compareKeyChains;//should be an array of full keys
             let resultTableRowElements = [];//this should contain the final array of ResultsRow elements
-            let colHeadersRowElement = [];
-            let keys = this.props.compareKeyChains.split('.');
-            let headerText = keys[keys.length - 1];
-            colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-            let textArrayOriginal = [];
-            let textArrayComparison = [];
-            let compareArray = [];
+            let colHeadersRowElement = [];//Header Value which will correspond the last value of the complete key path
+            let longestArrayLength = 0;
 
-            //convert JSON to Array for both
-            this.getTextArraysFromJson(textArrayOriginal, textArrayComparison);
+            //need to iterate over each key selected
+            keys.forEach((key) => {
 
-            //create the diff tokens between the two
-            this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
+                let keyComponentsArray = key.split('.');
+                let headerText = keyComponentsArray[keyComponentsArray.length - 1];
+                let textArrayOriginal = [];
+                let textArrayComparison = [];
+                let compareArray = [];
+
+                colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+
+                //convert JSON to Array for both and put into an array of arrays
+                this.getTextArraysFromJson(key,textArrayOriginal, textArrayComparison);
+                console.log({textArrayOriginal, textArrayComparison});
+
+                //create the diff tokens between the two and place into array of arrays
+                this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
+
+                arrayOfOriginalTextArrays.push(textArrayOriginal);
+                arrayOfComparisonTextArrays.push(textArrayComparison);
+                arrayOfComparisonArrays.push(compareArray);
+
+                if(compareArray.length > longestArrayLength){
+                    longestArrayLength = compareArray.length;
+                }
+            });
+
 
             resultTableRowElements.push(<tr key={'header row'}>{colHeadersRowElement}</tr>);
-
-            console.log(compareArray);
-
+            //console.log(compareArray);
+            let numColumns = this.props.compareKeyChains.length;
 
             //Convert the Text Array and the comparison info to rows
             let originalTextIndex = 0;
             let compareTextIndex = 0;
-            for (let i = 0; i < compareArray.length; i++) {
+            for (let rowIndex = 0; rowIndex < longestArrayLength; rowIndex++) {
 
                 //for each no change - add current (first++, and second++) index++, and value for two cells - in white
                 //for each removal, add current (first++, and second) index++, add value for first cell - cells in Red
                 //for each addition, add current (first, and second++) index, value in second cell - cells in green
                 let singleRowTextValue = [];
                 let singleRowCompareValue = [];
+                let rowComparison = NO_DIFF;
 
-                if (compareArray[i] === REMOVE) {
-                    singleRowTextValue.push(originalTextIndex + 1);
-                    singleRowTextValue.push('');
-                    singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
-                    singleRowTextValue.push('');
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(REMOVE);
-                    singleRowCompareValue.push(NO_DIFF);
-                } else if (compareArray[i] === ADD) {
-                    singleRowTextValue.push('');
-                    singleRowTextValue.push(compareTextIndex + 1);
-                    singleRowTextValue.push('');
-                    singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(ADD);
+                for (let colIndex = 0; colIndex < numColumns; colIndex++) {
+
+                    let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
+                    let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
+                    let compareArray = arrayOfComparisonArrays[colIndex];
+
+                    if (compareArray[rowIndex] === REMOVE) {
+                        singleRowTextValue.push(originalTextIndex + 1);
+                        singleRowTextValue.push('');
+                        singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
+                        singleRowTextValue.push('');
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(REMOVE);
+                        singleRowCompareValue.push(NO_DIFF);
+                        rowComparison = REMOVE;
+                    } else if (compareArray[rowIndex] === ADD) {
+                        singleRowTextValue.push('');
+                        singleRowTextValue.push(compareTextIndex + 1);
+                        singleRowTextValue.push('');
+                        singleRowTextValue.push(textArrayComparison[compareTextIndex]);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(ADD);
+                        rowComparison = ADD;
+                    } else {
+                        //should be in both
+                        singleRowTextValue.push(originalTextIndex + 1);
+                        singleRowTextValue.push(compareTextIndex + 1);
+                        singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
+                        singleRowTextValue.push(textArrayComparison[compareTextIndex]);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF);
+                    }
+                }
+
+                if (rowComparison === REMOVE) {
+                    originalTextIndex++;
+                } else if (rowComparison === ADD) {
+                    compareTextIndex++;
                 } else {
-                    //should be in both
-                    singleRowTextValue.push(originalTextIndex + 1);
-                    singleRowTextValue.push(compareTextIndex + 1);
-                    singleRowTextValue.push(textArrayOriginal[originalTextIndex++]);
-                    singleRowTextValue.push(textArrayComparison[compareTextIndex++]);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
-                    singleRowCompareValue.push(NO_DIFF);
+                    originalTextIndex++;
+                    compareTextIndex++;
                 }
 
                 resultTableRowElements.push(<ResultRow
-                    key={'Result Table Row ' + i}
-                    rowIndex={i}
+                    key={'Result Table Row ' + rowIndex}
+                    rowIndex={rowIndex}
                     cellsText={singleRowTextValue}
                     cellsDiffState={singleRowCompareValue}/>);
             }
@@ -86,11 +126,11 @@ export default class ResultTable extends Component {
         }
     }
 
-    getTextArraysFromJson(textArrayOriginal, textArrayComparison) {
-        if (this.props.compareKeyChains.includes('0')) {
-            this.getTextArrayFromJsonArray(this.props.compareKeyChains, textArrayOriginal, textArrayComparison);
+    getTextArraysFromJson(key, textArrayOriginal, textArrayComparison) {
+        if (key.includes('0')) {
+            this.getTextArrayFromJsonArray(key, textArrayOriginal, textArrayComparison);
         } else {
-            this.getTextArrayFromJsonSingle(this.props.compareKeyChains, textArrayOriginal, textArrayComparison);
+            this.getTextArrayFromJsonSingle(key, textArrayOriginal, textArrayComparison);
         }
     }
 
@@ -105,10 +145,7 @@ export default class ResultTable extends Component {
     getDiffValues(textArrayOriginal, textArrayComparison, compareArray) {
         let diffReturn;
 
-        let textArrayOriginalOriginal = [...textArrayOriginal];
-        let textArrayComparisonOriginal = [...textArrayComparison];
-
-        diffReturn = diffArrays(textArrayOriginalOriginal, textArrayComparisonOriginal);
+        diffReturn = diffArrays(textArrayOriginal, textArrayComparison);
         console.log(diffReturn);
 
         compareArray.length = 0;//This is the way to clear an array

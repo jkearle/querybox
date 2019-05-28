@@ -64,10 +64,10 @@ export function showJson(showJson) {
     };
 }
 
-export function setSelectedKey(selectedKey) {
+export function setSelectedKeys(selectedKeys) {
     return {
-        type: types.SET_SELECTED_KEY,
-        selectedKey: selectedKey
+        type: types.SET_SELECTED_KEYS,
+        selectedKeys: selectedKeys
     };
 }
 

@@ -5,9 +5,19 @@ import PropTypes from "prop-types";
 
 export default class KeySelect extends Component {
     handleSelectionChange = (selection) => {
+
+        //debugger;
+        selection.forEach((s) => {
+            if (this.props.compareKeyChains !== undefined && Array.isArray(this.props.compareKeyChains)) {
+                if (!this.props.compareKeyChains.includes(s.value)) {
+                    this.props.compareKeyChains.push(s.value)
+                }
+            }
+        });
+
         const {selectedKeysUpdated} = this.props;
         if(selectedKeysUpdated !== undefined) {
-            selectedKeysUpdated(selection[0].value);
+            selectedKeysUpdated();
         }
     };
 
@@ -24,10 +34,20 @@ export default class KeySelect extends Component {
         }
     }
 
+
+    clearSelected = () => {
+        const {selectedKeysUpdated} = this.props;
+        if (selectedKeysUpdated !== undefined) {
+            this.props.compareKeyChains.length = 0;
+            selectedKeysUpdated();
+        }
+    };
+
     render() {
         return (
             <div className="KeySelect">
                 {this.getMultiSelect()}
+                <button className={'clearButton'} onClick={this.clearSelected}>{'Clear'} </button>
             </div>
         );
     }

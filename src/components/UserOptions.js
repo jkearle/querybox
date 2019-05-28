@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import './SplitResults.css';
 import {KeySelect} from "./index";
 import {connect} from 'react-redux';
-import {showJson, setSelectedKey} from "../actions/actions";
+import {showJson, setSelectedKeys} from "../actions/actions";
 
 class UserOptions extends Component {
 
-    handleSelectionChange = (selectedKeys) => {
-        this.props.setSelectedKey(selectedKeys);
+    handleSelectionChange = () => {
+        this.props.setSelectedKeys([...this.props.compareKeyChains]);//pass a copy for now, TODO looks to replace with calls that add and clear the original
     };
 
     showReturnInJson = () => {
@@ -54,6 +54,7 @@ class UserOptions extends Component {
             <div className='User Options'>
                 {this.getTabButtons()}
                 {this.getKeySelect()}
+
             </div>
         );
     }
@@ -63,13 +64,13 @@ const mapStateToProps = state => {
     return {
         returnData1: state.returnData.returnData1,
         keys: state.returnData.returnKeys,
-        compareKeyChains: state.visualState.selectedKey,
+        compareKeyChains: state.visualState.selectedKeys,
         showJson: state.visualState.showJson,
     };
 };
 
 const mapDispatchToProps = {
-    setSelectedKey: (selectedKey) => setSelectedKey(selectedKey),
+    setSelectedKeys: (selectedKeys) => setSelectedKeys(selectedKeys),
     showJsonDispatch: (show) => showJson(show)
 };
 

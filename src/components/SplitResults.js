@@ -64,7 +64,7 @@ const mapStateToProps = state => {
         returnData1: state.returnData.returnData1,
         returnData2: state.returnData.returnData2,
         split: state.visualState.split,
-        compareKeyChains: state.visualState.selectedKey,
+        compareKeyChains: state.visualState.selectedKeys,
         showJson: state.visualState.showJson,
     };
 };
