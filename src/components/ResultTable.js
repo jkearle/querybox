@@ -79,33 +79,39 @@ export default class ResultTable extends Component {
                     let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
 
                     if (compareArray[rowIndex] === REMOVE) {
-                        singleRowTextValue.push(originalTextIndex + 1);
-                        singleRowTextValue.push('');
+                        if(colIndex === 0) {
+                            singleRowTextValue.push(originalTextIndex + 1);
+                            singleRowTextValue.push('');
+                            singleRowCompareValue.push(NO_DIFF);
+                            singleRowCompareValue.push(NO_DIFF);
+                        }
                         singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
                         singleRowTextValue.push('');
-                        singleRowCompareValue.push(NO_DIFF);
-                        singleRowCompareValue.push(NO_DIFF);
                         singleRowCompareValue.push(REMOVE);
                         singleRowCompareValue.push(NO_DIFF);
                         rowComparison = REMOVE;
                     } else if (compareArray[rowIndex] === ADD) {
-                        singleRowTextValue.push('');
-                        singleRowTextValue.push(compareTextIndex + 1);
+                        if(colIndex === 0) {
+                            singleRowTextValue.push('');
+                            singleRowTextValue.push(compareTextIndex + 1);
+                            singleRowCompareValue.push(NO_DIFF);
+                            singleRowCompareValue.push(NO_DIFF);
+                        }
                         singleRowTextValue.push('');
                         singleRowTextValue.push(textArrayComparison[compareTextIndex]);
-                        singleRowCompareValue.push(NO_DIFF);
-                        singleRowCompareValue.push(NO_DIFF);
                         singleRowCompareValue.push(NO_DIFF);
                         singleRowCompareValue.push(ADD);
                         rowComparison = ADD;
                     } else {
                         //should be in both
-                        singleRowTextValue.push(originalTextIndex + 1);
-                        singleRowTextValue.push(compareTextIndex + 1);
+                        if(colIndex === 0) {
+                            singleRowTextValue.push(originalTextIndex + 1);
+                            singleRowTextValue.push(compareTextIndex + 1);
+                            singleRowCompareValue.push(NO_DIFF);
+                            singleRowCompareValue.push(NO_DIFF);
+                        }
                         singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
                         singleRowTextValue.push(textArrayComparison[compareTextIndex]);
-                        singleRowCompareValue.push(NO_DIFF);
-                        singleRowCompareValue.push(NO_DIFF);
                         singleRowCompareValue.push(NO_DIFF);
                         singleRowCompareValue.push(NO_DIFF);
                     }
@@ -269,12 +275,10 @@ export default class ResultTable extends Component {
         let keys = singleCompareKeyChain.split('.');
         let arrayObject = undefined;
         let compareArrayObject = undefined;
-        let arrayIndex = 0;
 
         for (let i = 0; i < keys.length; i++) {
             let s = keys[i];
             if (s === '0') {
-                arrayIndex = i;
                 i = keys.length;
             } else {
                 if (arrayObject === undefined) {
