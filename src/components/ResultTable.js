@@ -13,11 +13,15 @@ export default class ResultTable extends Component {
 
             let arrayOfOriginalTextArrays = [];
             let arrayOfComparisonTextArrays = [];
-            let arrayOfComparisonArrays = [];
+            let compareArray = [];
             let keys = this.props.compareKeyChains;//should be an array of full keys
             let resultTableRowElements = [];//this should contain the final array of ResultsRow elements
             let colHeadersRowElement = [];//Header Value which will correspond the last value of the complete key path
             let longestArrayLength = 0;
+            let first = true;
+
+            colHeadersRowElement.push(<th key={'firstcolumn'}> {''} </th>);
+            colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
 
             //need to iterate over each key selected
             keys.forEach((key) => {
@@ -26,20 +30,26 @@ export default class ResultTable extends Component {
                 let headerText = keyComponentsArray[keyComponentsArray.length - 1];
                 let textArrayOriginal = [];
                 let textArrayComparison = [];
-                let compareArray = [];
 
                 colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+                if(first){
+                    //For the first one we use the entire object of each array element to get the comparison
+                    this.getJsonStringRepresentationForJsonArray(key, textArrayOriginal, textArrayComparison);
+                    //create the diff tokens between the two and place into array of arrays
+                    this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
+                    console.log({textArrayOriginal, textArrayComparison, compareArray});
+                    textArrayOriginal.length = 0;
+                    textArrayComparison.length = 0;
+                    first = false;
+
+                }
 
                 //convert JSON to Array for both and put into an array of arrays
                 this.getTextArraysFromJson(key,textArrayOriginal, textArrayComparison);
-                console.log({textArrayOriginal, textArrayComparison});
 
-                //create the diff tokens between the two and place into array of arrays
-                this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
 
                 arrayOfOriginalTextArrays.push(textArrayOriginal);
                 arrayOfComparisonTextArrays.push(textArrayComparison);
-                arrayOfComparisonArrays.push(compareArray);
 
                 if(compareArray.length > longestArrayLength){
                     longestArrayLength = compareArray.length;
@@ -67,7 +77,6 @@ export default class ResultTable extends Component {
 
                     let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
                     let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
-                    let compareArray = arrayOfComparisonArrays[colIndex];
 
                     if (compareArray[rowIndex] === REMOVE) {
                         singleRowTextValue.push(originalTextIndex + 1);
@@ -171,11 +180,10 @@ export default class ResultTable extends Component {
     }
 
     /**
-     * Retrieves the text for the given key path, places the text into textValueArray. If the
-     * compareReturn Data is valid, then it will check if the key path is valid, then compare that
-     * value to the previous text found. The state of the comparison (either Different, same, or nothing
-     * when the key path is not valid in the compare data) is placed into the diffStateArray.
-     * This method is used if the key path contains an arrays along the path.
+     * Retrieves the JSON string representation for a JSON array for the given key path,
+     * places the text into textValueArray. If the
+     * compareReturn Data is valid, then it will check if the key path is valid, and grab the comparison text
+     * value as well.
      * @param singleCompareKeyChain - Period separated key values for the JSON object.
      * @param textValueArray - This method will push the text value found at the end of the key path for the source JSON
      * @param textCompareArray - This method will push the text value found at the end of the key path for the comparison JSON
@@ -240,6 +248,77 @@ export default class ResultTable extends Component {
 
             if (finalObject === undefined || finalObject === null) {
                 finalObject = '';
+            }
+
+            textCompareArray.push(compareFinalObject.toString());
+            textValueArray.push(finalObject.toString());
+        }
+    }
+
+    /**
+     * Retrieves the text for the given key path, places the text into textValueArray. If the
+     * compareReturn Data is valid, then it will check if the key path is valid, then popular the
+     * textCompareArray with thee corresponding JSON string
+     * @param singleCompareKeyChain - Period separated key values for the JSON object.
+     * @param textValueArray - This method will push the text value for the entire JSON object in the array.
+     * @param textCompareArray - This method will push the text value for comparison JSON object.
+     */
+    getJsonStringRepresentationForJsonArray(singleCompareKeyChain, textValueArray, textCompareArray) {
+        const {returnData, compareReturnData} = this.props;
+
+        let keys = singleCompareKeyChain.split('.');
+        let arrayObject = undefined;
+        let compareArrayObject = undefined;
+        let arrayIndex = 0;
+
+        for (let i = 0; i < keys.length; i++) {
+            let s = keys[i];
+            if (s === '0') {
+                arrayIndex = i;
+                i = keys.length;
+            } else {
+                if (arrayObject === undefined) {
+                    arrayObject = returnData[s];
+                } else {
+                    arrayObject = arrayObject[s];
+                }
+            }
+        }
+
+        //If we have a compare object then let's compare
+        if (compareReturnData !== undefined && compareReturnData !== null) {
+            for (let i = 0; i < keys.length; i++) {
+                let s = keys[i];
+                if (s === '0') {
+                    i = keys.length;
+                } else {
+                    if (compareArrayObject === undefined) {
+                        compareArrayObject = compareReturnData[s];
+                    } else {
+                        compareArrayObject = compareArrayObject[s];
+                    }
+                }
+            }
+        }
+        /////////////////////////////////////////////
+        for (let i = 0; i < arrayObject.length; i++) {
+            let finalObject = arrayObject[i];
+
+            let compareFinalObject = undefined;
+            if (compareArrayObject !== undefined) {
+                compareFinalObject = compareArrayObject[i];
+            }
+
+            if (compareFinalObject === undefined || compareFinalObject === null) {
+                compareFinalObject = '';
+            } else {
+                compareFinalObject = JSON.stringify(compareFinalObject);
+            }
+
+            if (finalObject === undefined || finalObject === null) {
+                finalObject = '';
+            } else {
+                finalObject = JSON.stringify(finalObject);
             }
 
             textCompareArray.push(compareFinalObject.toString());
