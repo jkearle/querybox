@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
 
-export const NO_DIFF = 0,
-    ADD = 1,
-    REMOVE = 2;
+export const NO_DIFF_BACKGROUND = 0,
+    ADD_SAME_BACKGROUND = 1,
+    ADD_DIFF_BACKGROUND = 2,
+    REMOVE_SAME_BACKGROUND = 3,
+    REMOVE_DIFF_BACKGROUND = 4;
 
 const NO_DIFF_COLOR = "white",
-    ADD_COLOR = "#9acd32",
-    REMOVE_COLOR = "#ff4500";
+    ADD__SAME_COLOR = "#ffff66",
+    ADD__DIFF_COLOR = "#9acd32",
+    REMOVE_SAME_COLOR = "#ff4500",
+    REMOVE_DIFF_COLOR = "#990000";
 
 
 export default class ResultRow extends Component {
@@ -21,10 +25,14 @@ export default class ResultRow extends Component {
             (cellsText.length === cellsDiffState.length)) {
             for (let i = 0; i < cellsText.length; i++) {
                 let cellDiffState = cellsDiffState[i];
-                if (cellDiffState === REMOVE) {
-                    color = REMOVE_COLOR;
-                } else if (cellDiffState === ADD) {
-                    color = ADD_COLOR;
+                if (cellDiffState === REMOVE_DIFF_BACKGROUND) {
+                    color = REMOVE_DIFF_COLOR;
+                } else if (cellDiffState === REMOVE_SAME_BACKGROUND) {
+                    color = REMOVE_SAME_COLOR;
+                } else if (cellDiffState === ADD_SAME_BACKGROUND) {
+                    color = ADD__SAME_COLOR;
+                } else if (cellDiffState === ADD_DIFF_BACKGROUND) {
+                    color = ADD__DIFF_COLOR;
                 } else {
                     color = NO_DIFF_COLOR;
                 }

@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
 import './ResultTable.css'
 import {ResultRow} from './index'
-import {NO_DIFF, ADD, REMOVE} from './ResultRow'
+import {NO_DIFF_BACKGROUND, ADD_SAME_BACKGROUND, ADD_DIFF_BACKGROUND, REMOVE_DIFF_BACKGROUND, REMOVE_SAME_BACKGROUND} from './ResultRow'
 import {diffArrays} from 'diff';//https://github.com/kpdecker/jsdiff or https://www.npmjs.com/package/diff
 import PropTypes from "prop-types";
 
 
+const NO_DIFF = 0,
+    ADD = 1,
+    REMOVE = 2;
+
 export default class ResultTable extends Component {
+
 
     getCompareTable() {
         if (this.areAllNeededPropsValid()) {
@@ -41,7 +46,7 @@ export default class ResultTable extends Component {
                     first = false;
 
                     for (let rowIndex = 0; rowIndex < compareArray.length; rowIndex++) {
-                        if (compareArray[rowIndex] !== NO_DIFF) {
+                        if (compareArray[rowIndex] !== NO_DIFF_BACKGROUND) {
                             noDiff = false;
                             rowIndex = compareArray.length;
                         }
@@ -92,49 +97,60 @@ export default class ResultTable extends Component {
                 //for each addition, add current (first, and second++) index, value in second cell - cells in green
                 let singleRowTextValue = [];
                 let singleRowCompareValue = [];
-                let rowComparison = NO_DIFF;
+                let rowComparison = NO_DIFF_BACKGROUND;
 
                 for (let colIndex = 0; colIndex < numColumns; colIndex++) {
 
                     let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
                     let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
 
+                    //need to add a remove_same and remove_diff, add_same and add_diff
+
                     if (compareArray[rowIndex] === REMOVE) {
                         if(colIndex === 0) {//first columns are reserved to display index
                             singleRowTextValue.push(originalTextIndex + 1);
                             singleRowTextValue.push('');
-                            singleRowCompareValue.push(NO_DIFF);
-                            singleRowCompareValue.push(NO_DIFF);
+                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
                         }
                         singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
                         singleRowTextValue.push('');
-                        singleRowCompareValue.push(REMOVE);
-                        singleRowCompareValue.push(NO_DIFF);
+                        //check if both text values are the same
+                        if(textArrayOriginal === textArrayComparison) {
+                            singleRowCompareValue.push(REMOVE_SAME_BACKGROUND);
+                        } else {
+                            singleRowCompareValue.push(REMOVE_DIFF_BACKGROUND);
+                        }
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
                         rowComparison = REMOVE;
                     } else if (compareArray[rowIndex] === ADD) {
                         if(colIndex === 0) {
                             singleRowTextValue.push('');
                             singleRowTextValue.push(compareTextIndex + 1);
-                            singleRowCompareValue.push(NO_DIFF);
-                            singleRowCompareValue.push(NO_DIFF);
+                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
                         }
                         singleRowTextValue.push('');
                         singleRowTextValue.push(textArrayComparison[compareTextIndex]);
-                        singleRowCompareValue.push(NO_DIFF);
-                        singleRowCompareValue.push(ADD);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                        if(textArrayOriginal === textArrayComparison) {
+                            singleRowCompareValue.push(ADD_SAME_BACKGROUND);
+                        } else {
+                            singleRowCompareValue.push(ADD_DIFF_BACKGROUND);
+                        }
                         rowComparison = ADD;
                     } else {
                         //should be in both
                         if(colIndex === 0) {
                             singleRowTextValue.push(originalTextIndex + 1);
                             singleRowTextValue.push(compareTextIndex + 1);
-                            singleRowCompareValue.push(NO_DIFF);
-                            singleRowCompareValue.push(NO_DIFF);
+                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
                         }
                         singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
                         singleRowTextValue.push(textArrayComparison[compareTextIndex]);
-                        singleRowCompareValue.push(NO_DIFF);
-                        singleRowCompareValue.push(NO_DIFF);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
                     }
                 }
 
