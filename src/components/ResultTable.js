@@ -19,9 +19,8 @@ export default class ResultTable extends Component {
             let colHeadersRowElement = [];//Header Value which will correspond the last value of the complete key path
             let longestArrayLength = 0;
             let first = true;
-
-            colHeadersRowElement.push(<th key={'firstcolumn'}> {''} </th>);
-            colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
+            //check for change - the number of columns to display depends on this check
+            let noDiff = true;
 
             //need to iterate over each key selected
             keys.forEach((key) => {
@@ -31,9 +30,8 @@ export default class ResultTable extends Component {
                 let textArrayOriginal = [];
                 let textArrayComparison = [];
 
-                colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-                if(first){
-                    //For the first one we use the entire object of each array element to get the comparison
+
+                if (first) {//For the first one we use the entire object of each array element to get the comparison, this will be used for the diffing
                     this.getJsonStringRepresentationForJsonArray(key, textArrayOriginal, textArrayComparison);
                     //create the diff tokens between the two and place into array of arrays
                     this.getDiffValues(textArrayOriginal, textArrayComparison, compareArray);
@@ -42,11 +40,35 @@ export default class ResultTable extends Component {
                     textArrayComparison.length = 0;
                     first = false;
 
+                    for (let rowIndex = 0; rowIndex < compareArray.length; rowIndex++) {
+                        if (compareArray[rowIndex] !== NO_DIFF) {
+                            noDiff = false;
+                            rowIndex = compareArray.length;
+                        }
+                    }
+
+                    if(noDiff){
+                        //Need a header for first column which is reserved to display the index numbers
+                        colHeadersRowElement.push(<th key={'firstColumn'}> {''} </th>);
+                    } else {
+                        //Need a header for first two columns
+                        colHeadersRowElement.push(<th key={'firstColumn'}> {''} </th>);
+                        colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
+                    }
                 }
 
                 //convert JSON to Array for both and put into an array of arrays
                 this.getTextArraysFromJson(key,textArrayOriginal, textArrayComparison);
 
+                //if no change then set colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+                if(noDiff){
+                    //Need a header for first column which is reserved to display the index numbers
+                    colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+                } else {
+                    //Need a header for first two columns
+                    colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+                    colHeadersRowElement.push(<th key={headerText + 'SecondColumn'}> {''} </th>);
+                }
 
                 arrayOfOriginalTextArrays.push(textArrayOriginal);
                 arrayOfComparisonTextArrays.push(textArrayComparison);
@@ -58,7 +80,6 @@ export default class ResultTable extends Component {
 
 
             resultTableRowElements.push(<tr key={'header row'}>{colHeadersRowElement}</tr>);
-            //console.log(compareArray);
             let numColumns = this.props.compareKeyChains.length;
 
             //Convert the Text Array and the comparison info to rows
@@ -79,7 +100,7 @@ export default class ResultTable extends Component {
                     let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
 
                     if (compareArray[rowIndex] === REMOVE) {
-                        if(colIndex === 0) {
+                        if(colIndex === 0) {//first columns are reserved to display index
                             singleRowTextValue.push(originalTextIndex + 1);
                             singleRowTextValue.push('');
                             singleRowCompareValue.push(NO_DIFF);
