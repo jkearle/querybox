@@ -8,10 +8,10 @@ export const NO_DIFF_BACKGROUND = 0,
     REMOVE_DIFF_BACKGROUND = 4;
 
 const NO_DIFF_COLOR = "white",
-    ADD__SAME_COLOR = "#ffff66",
-    ADD__DIFF_COLOR = "#9acd32",
+    ADD_SAME_COLOR = "#ffff66",
+    ADD_DIFF_COLOR = "#9acd32",
     REMOVE_SAME_COLOR = "#ff4500",
-    REMOVE_DIFF_COLOR = "#990000";
+    REMOVE_DIFF_COLOR = "#ff9933";
 
 
 export default class ResultRow extends Component {
@@ -30,9 +30,9 @@ export default class ResultRow extends Component {
                 } else if (cellDiffState === REMOVE_SAME_BACKGROUND) {
                     color = REMOVE_SAME_COLOR;
                 } else if (cellDiffState === ADD_SAME_BACKGROUND) {
-                    color = ADD__SAME_COLOR;
+                    color = ADD_SAME_COLOR;
                 } else if (cellDiffState === ADD_DIFF_BACKGROUND) {
-                    color = ADD__DIFF_COLOR;
+                    color = ADD_DIFF_COLOR;
                 } else {
                     color = NO_DIFF_COLOR;
                 }

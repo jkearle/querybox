@@ -1,4 +1,4 @@
-table.result.table {
+table.resultsTable {
     border: 1px solid black;
     border-collapse: collapse;
     text-align: left;
@@ -7,20 +7,20 @@ table.result.table {
     padding-left: 5px;
 }
 
-table.result.table th {
+table.resultsTable th {
     background-color: #2c65af;
     color: white;
-    border: 1px solid black;
     border-collapse: collapse;
     text-align: center;
     padding: 15px;
 }
 
-table.result.table td {
-    border: 1px solid black;
+table.resultsTable td {
+    /*border: 1px solid black;*/
+    border-bottom:1pt solid black;
     border-collapse: collapse;
     text-align: left;
-    padding-right: 5px;
+    padding-right: 15px;
     padding-top: 5px;
-    padding-left: 5px;
+    padding-left: 15px;
 }

@@ -24,8 +24,10 @@ export default class ResultTable extends Component {
             let colHeadersRowElement = [];//Header Value which will correspond the last value of the complete key path
             let longestArrayLength = 0;
             let first = true;
-            //check for change - the number of columns to display depends on this check
-            let noDiff = true;
+
+            //skip two cells in header for row index display
+            colHeadersRowElement.push(<th key={'firstColumn'}> {''} </th>);
+            colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
 
             //need to iterate over each key selected
             keys.forEach((key) => {
@@ -44,36 +46,13 @@ export default class ResultTable extends Component {
                     textArrayOriginal.length = 0;
                     textArrayComparison.length = 0;
                     first = false;
-
-                    for (let rowIndex = 0; rowIndex < compareArray.length; rowIndex++) {
-                        if (compareArray[rowIndex] !== NO_DIFF_BACKGROUND) {
-                            noDiff = false;
-                            rowIndex = compareArray.length;
-                        }
-                    }
-
-                    if(noDiff){
-                        //Need a header for first column which is reserved to display the index numbers
-                        colHeadersRowElement.push(<th key={'firstColumn'}> {''} </th>);
-                    } else {
-                        //Need a header for first two columns
-                        colHeadersRowElement.push(<th key={'firstColumn'}> {''} </th>);
-                        colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
-                    }
                 }
 
                 //convert JSON to Array for both and put into an array of arrays
                 this.getTextArraysFromJson(key,textArrayOriginal, textArrayComparison);
 
-                //if no change then set colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-                if(noDiff){
-                    //Need a header for first column which is reserved to display the index numbers
-                    colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-                } else {
-                    //Need a header for first two columns
-                    colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-                    colHeadersRowElement.push(<th key={headerText + 'SecondColumn'}> {''} </th>);
-                }
+                colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
+                colHeadersRowElement.push(<th key={headerText + 'SecondColumn'}> {''} </th>);
 
                 arrayOfOriginalTextArrays.push(textArrayOriginal);
                 arrayOfComparisonTextArrays.push(textArrayComparison);
@@ -170,7 +149,7 @@ export default class ResultTable extends Component {
                     cellsDiffState={singleRowCompareValue}/>);
             }
 
-            return <table className="results">
+            return <table className="resultsTable">
                 <tbody>
                 {resultTableRowElements}
                 </tbody>

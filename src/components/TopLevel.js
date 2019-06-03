@@ -31,6 +31,10 @@ class TopLevel extends Component {
                         }).catch(error => {
                         this.props.updateReturnDataStatus(' Error occurred => ' + error.message);
                     });
+                    //Need to clear what we currently have if this a change - TODO this should be improved, could be one call, could give options to keep current selections, etc.
+                    this.props.updateReturnData([], 1);
+                    this.props.updateReturnData([], 2);
+                    this.props.updateReturnDataKeys([]);
                     this.props.updateReturnDataStatus(' Fetching');
                 } catch (e) {
                     this.props.updateReturnDataStatus(' Exception on Query 1');
