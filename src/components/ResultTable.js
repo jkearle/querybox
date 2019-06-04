@@ -12,7 +12,6 @@ const NO_DIFF = 0,
 
 export default class ResultTable extends Component {
 
-
     getCompareTable() {
         if (this.areAllNeededPropsValid()) {
 
@@ -27,7 +26,9 @@ export default class ResultTable extends Component {
 
             //skip two cells in header for row index display
             colHeadersRowElement.push(<th key={'firstColumn'}> {''} </th>);
-            colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
+            if(this.props.isCombinedTable) {
+                colHeadersRowElement.push(<th key={'secondColumn'}> {''} </th>);
+            }
 
             //need to iterate over each key selected
             keys.forEach((key) => {
@@ -52,7 +53,9 @@ export default class ResultTable extends Component {
                 this.getTextArraysFromJson(key,textArrayOriginal, textArrayComparison);
 
                 colHeadersRowElement.push(<th key={headerText}> {headerText} </th>);
-                colHeadersRowElement.push(<th key={headerText + 'SecondColumn'}> {''} </th>);
+                if(this.props.isCombinedTable) {
+                    colHeadersRowElement.push(<th key={headerText + 'SecondColumn'}> {''} </th>);
+                }
 
                 arrayOfOriginalTextArrays.push(textArrayOriginal);
                 arrayOfComparisonTextArrays.push(textArrayComparison);
@@ -67,93 +70,216 @@ export default class ResultTable extends Component {
             let numColumns = this.props.compareKeyChains.length;
 
             //Convert the Text Array and the comparison info to rows
-            let originalTextIndex = 0;
-            let compareTextIndex = 0;
-            for (let rowIndex = 0; rowIndex < longestArrayLength; rowIndex++) {
 
-                //for each no change - add current (first++, and second++) index++, and value for two cells - in white
-                //for each removal, add current (first++, and second) index++, add value for first cell - cells in Red
-                //for each addition, add current (first, and second++) index, value in second cell - cells in green
-                let singleRowTextValue = [];
-                let singleRowCompareValue = [];
-                let rowComparison = NO_DIFF_BACKGROUND;
-
-                for (let colIndex = 0; colIndex < numColumns; colIndex++) {
-
-                    let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
-                    let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
-
-                    //need to add a remove_same and remove_diff, add_same and add_diff
-
-                    if (compareArray[rowIndex] === REMOVE) {
-                        if(colIndex === 0) {//first columns are reserved to display index
-                            singleRowTextValue.push(originalTextIndex + 1);
-                            singleRowTextValue.push('');
-                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                        }
-                        singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
-                        singleRowTextValue.push('');
-                        //check if both text values are the same
-                        if(textArrayOriginal === textArrayComparison) {
-                            singleRowCompareValue.push(REMOVE_SAME_BACKGROUND);
-                        } else {
-                            singleRowCompareValue.push(REMOVE_DIFF_BACKGROUND);
-                        }
-                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                        rowComparison = REMOVE;
-                    } else if (compareArray[rowIndex] === ADD) {
-                        if(colIndex === 0) {
-                            singleRowTextValue.push('');
-                            singleRowTextValue.push(compareTextIndex + 1);
-                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                        }
-                        singleRowTextValue.push('');
-                        singleRowTextValue.push(textArrayComparison[compareTextIndex]);
-                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                        if(textArrayOriginal === textArrayComparison) {
-                            singleRowCompareValue.push(ADD_SAME_BACKGROUND);
-                        } else {
-                            singleRowCompareValue.push(ADD_DIFF_BACKGROUND);
-                        }
-                        rowComparison = ADD;
-                    } else {
-                        //should be in both
-                        if(colIndex === 0) {
-                            singleRowTextValue.push(originalTextIndex + 1);
-                            singleRowTextValue.push(compareTextIndex + 1);
-                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                            singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                        }
-                        singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
-                        singleRowTextValue.push(textArrayComparison[compareTextIndex]);
-                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
-                    }
-                }
-
-                if (rowComparison === REMOVE) {
-                    originalTextIndex++;
-                } else if (rowComparison === ADD) {
-                    compareTextIndex++;
-                } else {
-                    originalTextIndex++;
-                    compareTextIndex++;
-                }
-
-                resultTableRowElements.push(<ResultRow
-                    key={'Result Table Row ' + rowIndex}
-                    rowIndex={rowIndex}
-                    cellsText={singleRowTextValue}
-                    cellsDiffState={singleRowCompareValue}/>);
-            }
+            this.ConvertResultsToTable(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements);
 
             return <table className="resultsTable">
                 <tbody>
                 {resultTableRowElements}
                 </tbody>
             </table>
+        }
+    }
+
+    ConvertResultsToTable(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements){
+        if(this.props.isCombinedTable){
+            this.ConvertResultsToCombinedTable(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements);
+        } else if (this.props.isSingleBaseTable){
+            this.ConvertResultsToSingleTableForBaseText(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements);
+        } else {
+            this.ConvertResultsToSingleTableForCompareText(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements);
+        }
+    }
+
+    ConvertResultsToCombinedTable(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements) {
+        let originalTextIndex = 0;
+        let compareTextIndex = 0;
+        for (let rowIndex = 0; rowIndex < longestArrayLength; rowIndex++) {
+
+            //for each no change - add current (first++, and second++) index++, and value for two cells - in white
+            //for each removal, add current (first++, and second) index++, add value for first cell - cells in Red
+            //for each addition, add current (first, and second++) index, value in second cell - cells in green
+            let singleRowTextValue = [];
+            let singleRowCompareValue = [];
+            let rowComparison = NO_DIFF_BACKGROUND;
+
+            for (let colIndex = 0; colIndex < numColumns; colIndex++) {
+
+                let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
+                let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
+
+                if (compareArray[rowIndex] === REMOVE) {
+                    if (colIndex === 0) {//first columns are reserved to display index
+                        singleRowTextValue.push(originalTextIndex + 1);
+                        singleRowTextValue.push('');
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
+                    singleRowTextValue.push('');
+                    //check if both text values are the same
+                    if (textArrayOriginal === textArrayComparison) {
+                        singleRowCompareValue.push(REMOVE_SAME_BACKGROUND);
+                    } else {
+                        singleRowCompareValue.push(REMOVE_DIFF_BACKGROUND);
+                    }
+                    singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    rowComparison = REMOVE;
+                } else if (compareArray[rowIndex] === ADD) {
+                    if (colIndex === 0) {
+                        singleRowTextValue.push('');
+                        singleRowTextValue.push(compareTextIndex + 1);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push('');
+                    singleRowTextValue.push(textArrayComparison[compareTextIndex]);
+                    singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    if (textArrayOriginal === textArrayComparison) {
+                        singleRowCompareValue.push(ADD_SAME_BACKGROUND);
+                    } else {
+                        singleRowCompareValue.push(ADD_DIFF_BACKGROUND);
+                    }
+                    rowComparison = ADD;
+                } else {
+                    //should be in both
+                    if (colIndex === 0) {
+                        singleRowTextValue.push(originalTextIndex + 1);
+                        singleRowTextValue.push(compareTextIndex + 1);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
+                    singleRowTextValue.push(textArrayComparison[compareTextIndex]);
+                    singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                }
+            }
+
+            if (rowComparison === REMOVE) {
+                originalTextIndex++;
+            } else if (rowComparison === ADD) {
+                compareTextIndex++;
+            } else {
+                originalTextIndex++;
+                compareTextIndex++;
+            }
+
+            resultTableRowElements.push(<ResultRow
+                key={'Result Table Row ' + rowIndex}
+                rowIndex={rowIndex}
+                cellsText={singleRowTextValue}
+                cellsDiffState={singleRowCompareValue}/>);
+        }
+    }
+
+    ConvertResultsToSingleTableForBaseText(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements) {
+        let originalTextIndex = 0;
+        for (let rowIndex = 0; rowIndex < longestArrayLength; rowIndex++) {
+
+            //for each no change - add current (first++, and second++) index++, and value for two cells - in white
+            //for each removal, add current (first++, and second) index++, add value for first cell - cells in Red
+            //for each addition, add current (first, and second++) index, value in second cell - cells in green
+            let singleRowTextValue = [];
+            let singleRowCompareValue = [];
+            let rowComparison = -1;
+
+            for (let colIndex = 0; colIndex < numColumns; colIndex++) {
+
+                let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
+                let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
+
+                if (compareArray[rowIndex] === REMOVE) {
+                    if (colIndex === 0) {//first columns are reserved to display index
+                        singleRowTextValue.push(originalTextIndex + 1);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
+                    //check if both text values are the same
+                    if (textArrayOriginal === textArrayComparison) {
+                        singleRowCompareValue.push(REMOVE_SAME_BACKGROUND);
+                    } else {
+                        singleRowCompareValue.push(REMOVE_DIFF_BACKGROUND);
+                    }
+                    rowComparison = REMOVE;
+                } else if (compareArray[rowIndex] === NO_DIFF){
+                    //should be in both
+                    if (colIndex === 0) {
+                        singleRowTextValue.push(originalTextIndex + 1);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
+                    singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                }
+
+            }
+
+            if (rowComparison === REMOVE) {
+                originalTextIndex++;
+            } else if (rowComparison === NO_DIFF) {
+                originalTextIndex++;
+            }
+
+            resultTableRowElements.push(<ResultRow
+                key={'Result Table Row ' + rowIndex}
+                rowIndex={rowIndex}
+                cellsText={singleRowTextValue}
+                cellsDiffState={singleRowCompareValue}/>);
+        }
+    }
+
+    ConvertResultsToSingleTableForCompareText(longestArrayLength, numColumns, arrayOfOriginalTextArrays, arrayOfComparisonTextArrays, compareArray, resultTableRowElements) {
+        let compareTextIndex = 0;
+        for (let rowIndex = 0; rowIndex < longestArrayLength; rowIndex++) {
+
+            //for each no change - add current (first++, and second++) index++, and value for two cells - in white
+            //for each removal, add current (first++, and second) index++, add value for first cell - cells in Red
+            //for each addition, add current (first, and second++) index, value in second cell - cells in green
+            let singleRowTextValue = [];
+            let singleRowCompareValue = [];
+            let rowComparison = -1;
+
+            for (let colIndex = 0; colIndex < numColumns; colIndex++) {
+
+                let textArrayOriginal = arrayOfOriginalTextArrays[colIndex];
+                let textArrayComparison = arrayOfComparisonTextArrays[colIndex];
+
+                //need to add a remove_same and remove_diff, add_same and add_diff
+
+                if (compareArray[rowIndex] === ADD) {
+                    if (colIndex === 0) {
+                        singleRowTextValue.push(compareTextIndex + 1);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push(textArrayComparison[compareTextIndex]);
+                    if (textArrayOriginal === textArrayComparison) {
+                        singleRowCompareValue.push(ADD_SAME_BACKGROUND);
+                    } else {
+                        singleRowCompareValue.push(ADD_DIFF_BACKGROUND);
+                    }
+                    rowComparison = ADD;
+                } else if (compareArray[rowIndex] === NO_DIFF){
+                    //should be in both
+                    if (colIndex === 0) {
+                        singleRowTextValue.push(compareTextIndex + 1);
+                        singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                    }
+                    singleRowTextValue.push(textArrayComparison[compareTextIndex]);
+                    singleRowCompareValue.push(NO_DIFF_BACKGROUND);
+                }
+            }
+
+            if (rowComparison === NO_DIFF) {
+                compareTextIndex++;
+            } else if (rowComparison === ADD) {
+                compareTextIndex++;
+            }
+
+            resultTableRowElements.push(<ResultRow
+                key={'Result Table Row ' + rowIndex}
+                rowIndex={rowIndex}
+                cellsText={singleRowTextValue}
+                cellsDiffState={singleRowCompareValue}/>);
         }
     }
 

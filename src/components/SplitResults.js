@@ -12,14 +12,23 @@ class SplitResults extends Component {
         }
     }
 
-    getResultsTable(returnData, compareReturnData, originalTable) {
+    getResultsTable(returnData, compareReturnData, isBaseTable) {
         if (returnData.data !== undefined && !this.props.showJson) {
-            return <ResultTable
-                returnData={returnData.data}
-                compareReturnData={compareReturnData.data}
-                compareKeyChains={this.props.compareKeyChains}
-                originalTable={originalTable}
-            />
+            if (this.props.useCombinedTable) {
+                return <ResultTable
+                    returnData={returnData.data}
+                    compareReturnData={compareReturnData.data}
+                    compareKeyChains={this.props.compareKeyChains}
+                    isCombinedTable={true}
+                />
+            } else {
+                return <ResultTable
+                    returnData={returnData.data}
+                    compareReturnData={compareReturnData.data}
+                    compareKeyChains={this.props.compareKeyChains}
+                    isSingleBaseTable={isBaseTable}
+                />
+            }
         }
     }
 
@@ -47,11 +56,12 @@ class SplitResults extends Component {
                         {this.getStats(returnData1)}
                         {this.getJsonTree(returnData1)}
                         {this.getResultsTable(returnData1, returnData2, true)}
+
                     </div>
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
                         {this.getJsonTree(returnData2)}
-                        {/*this.getResultsTable(returnData2, returnData1, false)*/}
+                        {this.getResultsTable(returnData1, returnData2, false)}
                     </div>
                 </div>
             </div>
