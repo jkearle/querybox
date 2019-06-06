@@ -6,7 +6,6 @@ import ResultRow from "./ResultRow";
 import ResultTable from "./ResultTable";
 import KeySelect from "./KeySelect";
 import Endpoint from './Endpoint';
-import Mode from './Mode';
 import Panel from "./Panel";
 import Menu from "./Menu";
 import MenuIcon from "./MenuIcon";
@@ -17,7 +16,6 @@ import UserOptions from "./UserOptions";
 
 
 export {Endpoint};
-export {Mode};
 export {Panel};
 export {Menu};
 export {MenuIcon};

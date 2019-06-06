@@ -135,7 +135,6 @@ class TopLevel extends Component {
                             <ActionButton text="Go" onClick={() => this.executeRequests()}/>
                         </div>
                     </div>
-                    <Mode/>
                     <Split/>
                     <Menu open={this.state.menu}/>
                 </div>
