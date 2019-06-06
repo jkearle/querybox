@@ -13,3 +13,13 @@
 .Menu.visible {
     left: 0;
 }
+
+.SectionHeader{
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+.Selection{
+    padding-left: 20px;
+    padding-bottom: 10px;
+}

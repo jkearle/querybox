@@ -211,7 +211,6 @@ export default class ResultTable extends Component {
                     singleRowTextValue.push(textArrayOriginal[originalTextIndex]);
                     singleRowCompareValue.push(NO_DIFF_BACKGROUND);
                 }
-
             }
 
             if (rowComparison === REMOVE) {

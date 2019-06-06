@@ -14,7 +14,7 @@ class SplitResults extends Component {
 
     getResultsTable(returnData, compareReturnData, isBaseTable) {
         if (returnData.data !== undefined && !this.props.showJson) {
-            if (this.props.useCombinedTable) {
+            if (this.props.comparisonIsInline) {
                 return <ResultTable
                     returnData={returnData.data}
                     compareReturnData={compareReturnData.data}
@@ -61,7 +61,7 @@ class SplitResults extends Component {
                     <div className={compareItem}>
                         {this.getStats(returnData2)}
                         {this.getJsonTree(returnData2)}
-                        {this.getResultsTable(returnData1, returnData2, false)}
+                        {!this.props.comparisonIsInline && this.getResultsTable(returnData1, returnData2, false)}
                     </div>
                 </div>
             </div>
@@ -76,6 +76,7 @@ const mapStateToProps = state => {
         split: state.visualState.split,
         compareKeyChains: state.visualState.selectedKeys,
         showJson: state.visualState.showJson,
+        comparisonIsInline: state.visualState.comparisonIsInline,
     };
 };
 

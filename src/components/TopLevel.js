@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import axios from 'axios/index';
 import './TopLevel.css';
-import {Endpoint, Mode, Panel, Split, ActionButton} from './index.js';
+import {Endpoint, Mode, Panel, Split, ActionButton, Menu, MenuIcon} from './index.js';
 import {connect} from 'react-redux';
 import {setReturnDataKeys, setReturnData, setReturnDataStatus, closeQueryPanel} from "../actions/actions";
 
 class TopLevel extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            menu: false
+        }
 
         document.addEventListener("mousedown", this.handleOffClick.bind(this));
     }
@@ -82,7 +86,25 @@ class TopLevel extends Component {
         });
     };
 
+    handleMenu(close = null) {
+        const menu = this.state.menu;
+        if (close === null) {
+            close = menu;
+        }
+        if (close === true) {
+            this.setState({menu: false});
+        } else {
+            this.setState({menu: true});
+        }
+    }
+
     handleOffClick(e) {
+        const isMenu = e.target.className === "MenuIcon" || e.target.className === "Menu visible";
+        const isMenuAncestor = e.target.closest(".Menu");
+        if (!isMenu && !isMenuAncestor) {
+            this.handleMenu(true);
+        }
+
         const isQuery = e.target.className === "Query component";
         const isPanel = e.target.className === "Panel visible";
         const isPanelAncestor = e.target.closest(".Panel");
@@ -101,6 +123,7 @@ class TopLevel extends Component {
         return (
             <div className="TopLevel">
                 <header>
+                    <MenuIcon onClick={() => this.handleMenu()}/>
                     QueryBox
                 </header>
                 <div className="TopLevel-Body">
@@ -114,6 +137,7 @@ class TopLevel extends Component {
                     </div>
                     <Mode/>
                     <Split/>
+                    <Menu open={this.state.menu}/>
                 </div>
                 {this.getPanel()}
             </div>

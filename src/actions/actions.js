@@ -71,24 +71,10 @@ export function setSelectedKeys(selectedKeys) {
     };
 }
 
-
-/*
-function url() {
-    return 'www.url.com';
-}
-
-export function fetchStuff() {
-    return dispatch => {
-        return fetch(url(), {
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'x-api-key': apiKey,
-                'Accept': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(json => dispatch(receiveStuff(json)));
+export function setComparisonInline(setComparisonInline) {
+    console.log('value of setComparisonInline' + setComparisonInline);
+    return {
+        type: types.SET_COMPARISON_INLINE,
+        setComparisonInline: setComparisonInline
     };
-} */
+}
